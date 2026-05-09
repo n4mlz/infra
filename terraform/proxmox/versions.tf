@@ -1,0 +1,12 @@
+# Version constraints for Terraform and the Proxmox provider.
+
+terraform {
+  required_version = ">= 1.8.0"
+
+  required_providers {
+    proxmox = {
+      source  = "bpg/proxmox"
+      version = "~> 0.70"
+    }
+  }
+}
