@@ -1,0 +1,9 @@
+# This patch disables Talos-managed CNI and kube-proxy.
+# Cilium will be installed separately after Kubernetes bootstrap.
+
+cluster:
+  network:
+    cni:
+      name: none
+  proxy:
+    disabled: true

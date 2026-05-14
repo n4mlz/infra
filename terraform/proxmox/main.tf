@@ -15,4 +15,5 @@ module "talos_vm" {
   datastore_id = var.vm_datastore_id
   iso_file_id  = var.talos_iso_file_id
   bridge       = var.vm_bridge
+  started      = true
 }

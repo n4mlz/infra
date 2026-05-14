@@ -1,0 +1,14 @@
+# This root Taskfile wires repository-level task namespaces.
+
+version: '3'
+
+includes:
+  talos:
+    taskfile: ./talos/Taskfile.yml
+    dir: ./talos
+
+tasks:
+  default:
+    desc: "List available tasks."
+    cmds:
+      - task --list

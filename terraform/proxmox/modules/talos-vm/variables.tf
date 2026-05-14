@@ -39,3 +39,9 @@ variable "iso_file_id" {
 variable "bridge" {
   type = string
 }
+
+variable "started" {
+  type        = bool
+  default     = false
+  description = "Whether the VM should be started after creation"
+}
