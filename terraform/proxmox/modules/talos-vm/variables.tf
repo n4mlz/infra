@@ -33,7 +33,9 @@ variable "datastore_id" {
 }
 
 variable "iso_file_id" {
-  type = string
+  type        = string
+  default     = "none"
+  description = "Proxmox file ID of Talos ISO. 'none' for empty CD-ROM."
 }
 
 variable "bridge" {
@@ -44,4 +46,10 @@ variable "started" {
   type        = bool
   default     = false
   description = "Whether the VM should be started after creation"
+}
+
+variable "boot_order" {
+  type        = list(string)
+  default     = ["scsi0"]
+  description = "Boot order for the VM. Default is disk-only."
 }

@@ -12,6 +12,7 @@ ARG KUBECTL_VERSION=1.32.1
 ARG HELM_VERSION=3.17.0
 ARG TALHELPER_VERSION=3.1.9
 ARG SOPS_VERSION=3.10.2
+ARG K9S_VERSION=0.32.7
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
@@ -86,6 +87,14 @@ RUN curl -fsSL -o /tmp/talhelper.tar.gz \
   && mv /tmp/talhelper /usr/local/bin/talhelper \
   && chmod +x /usr/local/bin/talhelper \
   && rm -f /tmp/talhelper.tar.gz
+
+# k9s
+RUN curl -fsSL -o /tmp/k9s.tar.gz \
+    "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_amd64.tar.gz" \
+  && tar -xzf /tmp/k9s.tar.gz -C /tmp \
+  && mv /tmp/k9s /usr/local/bin/k9s \
+  && chmod +x /usr/local/bin/k9s \
+  && rm -f /tmp/k9s.tar.gz
 
 USER ${USERNAME}
 WORKDIR /workspace/infra

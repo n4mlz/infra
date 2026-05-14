@@ -17,6 +17,7 @@ talhelper --version
 sops --version
 age --version
 task --version
+k9s version
 
 echo ""
 echo "== Devcontainer ready =="

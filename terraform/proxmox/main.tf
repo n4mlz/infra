@@ -1,4 +1,11 @@
 # Root module. Provisions Talos VMs on Proxmox using the talos-vm module.
+#
+# Initial install (one-time):
+#   tofu apply -var='talos_iso_file_id=local:iso/nocloud-amd64.iso' \
+#     -var='talos_boot_order=["ide2","scsi0"]'
+#
+# Post-install (default):
+#   tofu apply
 
 module "talos_vm" {
   source = "./modules/talos-vm"
@@ -16,4 +23,5 @@ module "talos_vm" {
   iso_file_id  = var.talos_iso_file_id
   bridge       = var.vm_bridge
   started      = true
+  boot_order   = var.talos_boot_order
 }
