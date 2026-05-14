@@ -10,7 +10,7 @@ resource "proxmox_virtual_environment_vm" "this" {
 
   machine = "q35"
 
-  started = false
+  started = var.started
 
   cpu {
     cores = var.cores

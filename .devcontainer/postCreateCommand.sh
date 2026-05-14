@@ -10,6 +10,13 @@ echo "== Tool Versions =="
 tofu version
 op --version
 jq --version
+talosctl version --client
+kubectl version --client --short 2>/dev/null || kubectl version --client
+helm version --short
+talhelper --version
+sops --version
+age --version
+task --version
 
 echo ""
 echo "== Devcontainer ready =="

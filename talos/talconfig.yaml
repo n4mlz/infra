@@ -1,0 +1,91 @@
+# This file declaratively defines the Talos cluster topology.
+# Non-secret cluster and node parameters. Talos secrets are stored in talsecret.sops.yaml.
+
+clusterName: n4mlz-cluster
+talosVersion: v1.9.0
+kubernetesVersion: v1.32.0
+endpoint: https://10.240.30.1:6443
+
+additionalApiServerCertSans:
+  - 10.240.30.1
+  - 10.240.30.2
+  - 10.240.30.3
+
+patches:
+  - "@./patches/cni.yaml"
+
+nodes:
+  - hostname: cp-01
+    controlPlane: true
+    ipAddress: 10.240.30.1
+    installDisk: /dev/sda
+    nameservers:
+      - 1.1.1.1
+      - 8.8.8.8
+    networkInterfaces:
+      - interface: eth0
+        addresses:
+          - 10.240.30.1/16
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 10.240.255.254
+
+  - hostname: cp-02
+    controlPlane: true
+    ipAddress: 10.240.30.2
+    installDisk: /dev/sda
+    nameservers:
+      - 1.1.1.1
+      - 8.8.8.8
+    networkInterfaces:
+      - interface: eth0
+        addresses:
+          - 10.240.30.2/16
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 10.240.255.254
+
+  - hostname: cp-03
+    controlPlane: true
+    ipAddress: 10.240.30.3
+    installDisk: /dev/sda
+    nameservers:
+      - 1.1.1.1
+      - 8.8.8.8
+    networkInterfaces:
+      - interface: eth0
+        addresses:
+          - 10.240.30.3/16
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 10.240.255.254
+
+  - hostname: wk-01
+    controlPlane: false
+    ipAddress: 10.240.30.4
+    installDisk: /dev/sda
+    nameservers:
+      - 1.1.1.1
+      - 8.8.8.8
+    networkInterfaces:
+      - interface: eth0
+        addresses:
+          - 10.240.30.4/16
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 10.240.255.254
+
+  - hostname: wk-02
+    controlPlane: false
+    ipAddress: 10.240.30.5
+    installDisk: /dev/sda
+    nameservers:
+      - 1.1.1.1
+      - 8.8.8.8
+    networkInterfaces:
+      - interface: eth0
+        addresses:
+          - 10.240.30.5/16
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 10.240.255.254

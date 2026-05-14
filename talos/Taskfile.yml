@@ -1,0 +1,59 @@
+# This Taskfile defines Talos operations using talhelper.
+# The SOPS age private key is stored in 1Password and restored into .local before rendering.
+
+version: '3'
+
+vars:
+  CLUSTER_NAME: n4mlz-cluster
+  OUT_DIR: ../.local/talos/clusterconfig
+  AGE_KEY_FILE: ../.local/sops/age/keys.txt
+  AGE_KEY_ITEM: SOPS age key for infra repo
+  OP_VAULT: Personal
+
+tasks:
+  pull-age-key:
+    desc: "Restore SOPS age private key from 1Password."
+    cmds:
+      - mkdir -p ../.local/sops/age
+      - op document get "{{.AGE_KEY_ITEM}}" --vault "{{.OP_VAULT}}" --output "{{.AGE_KEY_FILE}}"
+
+  gen-secret:
+    desc: "Generate and encrypt Talos secrets. Run only once for a new cluster."
+    cmds:
+      - test ! -f talsecret.sops.yaml || (echo "talsecret.sops.yaml already exists" && exit 1)
+      - talhelper gensecret > talsecret.sops.yaml
+      - SOPS_AGE_KEY_FILE={{.AGE_KEY_FILE}} sops -e -i talsecret.sops.yaml
+
+  render:
+    desc: "Render Talos machine configs into .local."
+    cmds:
+      - mkdir -p "{{.OUT_DIR}}"
+      - SOPS_AGE_KEY_FILE={{.AGE_KEY_FILE}} talhelper genconfig --config-file talconfig.yaml --secret-file talsecret.sops.yaml --out-dir "{{.OUT_DIR}}"
+
+  apply:
+    desc: "Apply one Talos config. Usage: NODE=cp-01 BOOT_IP=10.240.255.118 task talos:apply"
+    requires:
+      vars:
+        - NODE
+        - BOOT_IP
+    cmds:
+      - talosctl apply-config --insecure --nodes "{{.BOOT_IP}}" --file "{{.OUT_DIR}}/{{.CLUSTER_NAME}}-{{.NODE}}.yaml"
+
+  bootstrap:
+    desc: "Bootstrap etcd on the first control-plane node. Run exactly once."
+    cmds:
+      - TALOSCONFIG={{.OUT_DIR}}/talosconfig talosctl config endpoint 10.240.30.1 10.240.30.2 10.240.30.3
+      - TALOSCONFIG={{.OUT_DIR}}/talosconfig talosctl config node 10.240.30.1
+      - TALOSCONFIG={{.OUT_DIR}}/talosconfig talosctl bootstrap
+
+  kubeconfig:
+    desc: "Fetch Kubernetes kubeconfig."
+    cmds:
+      - mkdir -p ../.local
+      - TALOSCONFIG={{.OUT_DIR}}/talosconfig talosctl kubeconfig ../.local
+
+  status:
+    desc: "Show cluster status."
+    cmds:
+      - TALOSCONFIG={{.OUT_DIR}}/talosconfig talosctl health --server=false || true
+      - KUBECONFIG=../.local/kubeconfig kubectl get nodes -o wide || true

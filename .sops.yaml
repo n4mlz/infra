@@ -1,0 +1,6 @@
+# This file defines how SOPS encrypts repository secrets.
+# The private age key is stored in 1Password and must not be committed.
+
+creation_rules:
+  - path_regex: talos/talsecret\.sops\.yaml$
+    age: age1864739s0808890gcer87xlrpq65messh9dk9j87ku2jgskr2mq7sflhf83

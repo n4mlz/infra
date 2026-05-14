@@ -33,9 +33,15 @@ devcontainer exec --workspace-folder . bash
 
 | ツール | 目的 |
 |------|---------|
-| Terraform | Proxmox VM の IaC |
+| OpenTofu | Proxmox VM の IaC |
 | 1Password CLI | 1Password ボルトからのシークレット注入 |
 | jq | JSON 処理 |
+| talosctl | Talos クラスタの管理 |
+| kubectl | Kubernetes クラスタの操作 |
+| helm | Kubernetes パッケージ管理 |
+| talhelper | Talos config 生成 |
+| sops | シークレット暗号化 |
+| age | SOPS 用暗号化鍵 |
 
 ## シークレットの扱い
 
@@ -46,8 +52,7 @@ devcontainer exec --workspace-folder . bash
 export TF_VAR_proxmox_api_token_id="$(op read 'op://Personal/Proxmox/token_id')"
 export TF_VAR_proxmox_api_token_secret="$(op read 'op://Personal/Proxmox/secret')"
 
-# または op run で実行
-op run --env-file ./op.env -- tofu plan
+tofu plan
 ```
 
 ## ステート管理

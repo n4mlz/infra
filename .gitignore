@@ -49,3 +49,9 @@ terraform.rc
 # Secrets
 .env
 .env.*
+
+# Local state and secrets (talos configs, kubeconfig, sops keys, etc.)
+.local/
+
+# Generated Talos configs contain unencrypted secrets.
+talos/clusterconfig/
