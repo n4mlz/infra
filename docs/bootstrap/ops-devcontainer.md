@@ -42,6 +42,7 @@ devcontainer exec --workspace-folder . bash
 | talhelper | Talos config 生成 |
 | sops | シークレット暗号化 |
 | age | SOPS 用暗号化鍵 |
+| k9s | Kubernetes クラスタ管理 TUI |
 
 ## シークレットの扱い
 

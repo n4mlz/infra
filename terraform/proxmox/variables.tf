@@ -49,5 +49,12 @@ variable "iso_datastore_id" {
 
 variable "talos_iso_file_id" {
   type        = string
-  description = "Proxmox file ID of Talos ISO, e.g. local:iso/talos-metal-amd64.iso"
+  description = "Proxmox file ID of Talos ISO. 'none' for empty CD-ROM (post-install)."
+  default     = "none"
+}
+
+variable "talos_boot_order" {
+  type        = list(string)
+  description = "Boot order for Talos VMs. Default is disk-only (post-install)."
+  default     = ["scsi0"]
 }

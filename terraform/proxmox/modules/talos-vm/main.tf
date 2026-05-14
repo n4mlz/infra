@@ -1,5 +1,6 @@
 # Reusable module for creating a Talos VM on Proxmox.
-# The VM is created in a stopped state with Talos ISO attached.
+# Default state: disk boot only, empty CD-ROM.
+# Set iso_file_id and boot_order for initial ISO installation.
 
 resource "proxmox_virtual_environment_vm" "this" {
   name        = var.vm_name
@@ -10,7 +11,8 @@ resource "proxmox_virtual_environment_vm" "this" {
 
   machine = "q35"
 
-  started = var.started
+  started    = var.started
+  boot_order = var.boot_order
 
   cpu {
     cores = var.cores
@@ -39,6 +41,7 @@ resource "proxmox_virtual_environment_vm" "this" {
 
   agent {
     enabled = true
+    timeout = "30s"
   }
 
   operating_system {

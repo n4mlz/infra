@@ -56,7 +56,10 @@ public key は `.sops.yaml` の `age:` フィールドに設定する。
 3. システム拡張に `siderolabs/qemu-guest-agent` を追加
 4. ISO をダウンロード
 5. Proxmox にアップロード: `camellia -> local -> ISO Images -> Upload`
-6. ファイルIDを控える（例: `local:iso/talos-metal-amd64.iso`）
+6. ファイルIDを控える（例: `local:iso/nocloud-amd64.iso`）
+
+VM 作成時は `-var='talos_iso_file_id=<ファイルID>'` で指定する。
+Talos install 後は ISO を外すため、変数を指定せずに `tofu apply` する。
 
 ### 5. Tailscale Subnet Router の設定
 
