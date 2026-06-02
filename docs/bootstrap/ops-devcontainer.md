@@ -39,6 +39,7 @@ devcontainer exec --workspace-folder . bash
 | talosctl | Talos クラスタの管理 |
 | kubectl | Kubernetes クラスタの操作 |
 | helm | Kubernetes パッケージ管理 |
+| flux | Kubernetes GitOps 管理 |
 | talhelper | Talos config 生成 |
 | sops | シークレット暗号化 |
 | age | SOPS 用暗号化鍵 |

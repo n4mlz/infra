@@ -1,0 +1,8 @@
+# This file aggregates the Kubernetes platform layer managed by Flux.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespaces.yaml
+  - sources.yaml
+  - cilium

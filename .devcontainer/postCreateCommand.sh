@@ -13,6 +13,7 @@ jq --version
 talosctl version --client
 kubectl version --client --short 2>/dev/null || kubectl version --client
 helm version --short
+flux version --client
 talhelper --version
 sops --version
 age --version

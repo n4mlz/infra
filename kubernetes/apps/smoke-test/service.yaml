@@ -1,0 +1,14 @@
+# This service exposes the smoke-test nginx deployment inside the cluster.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: smoke-test
+spec:
+  selector:
+    app.kubernetes.io/name: smoke-test-nginx
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
