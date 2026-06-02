@@ -80,7 +80,7 @@ task talos:status
 talos/
   talconfig.yaml          # cluster topology definition
   talsecret.sops.yaml     # encrypted Talos secrets
-  cilium-values.yaml      # Cilium Helm values
+  cilium-values.yaml      # Cilium Helm values (initial bootstrap only。Flux 移行後は kubernetes/platform/cilium/helmrelease.yaml が canonical source)
   patches/
     cni.yaml              # CNI none + kube-proxy disabled
   Taskfile.yml            # talos operations

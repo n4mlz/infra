@@ -1,0 +1,6 @@
+# This namespace contains the smoke-test workload.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: smoke-test

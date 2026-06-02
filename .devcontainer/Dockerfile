@@ -1,5 +1,5 @@
 # Docker image for the infra operations environment.
-# Contains OpenTofu, 1Password CLI, talosctl, kubectl, helm, talhelper, sops, age, yq, go-task.
+# Contains OpenTofu, 1Password CLI, talosctl, kubectl, helm, flux, talhelper, sops, age, yq, go-task.
 
 FROM debian:bookworm-slim
 
@@ -12,6 +12,7 @@ ARG KUBECTL_VERSION=1.32.1
 ARG HELM_VERSION=3.17.0
 ARG TALHELPER_VERSION=3.1.9
 ARG SOPS_VERSION=3.10.2
+ARG FLUX_VERSION=2.7.2
 ARG K9S_VERSION=0.32.7
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -62,6 +63,14 @@ RUN curl -fsSL -o /tmp/helm.tar.gz \
   && mv /tmp/linux-amd64/helm /usr/local/bin/helm \
   && chmod +x /usr/local/bin/helm \
   && rm -rf /tmp/helm.tar.gz /tmp/linux-amd64
+
+# flux
+RUN curl -fsSL -o /tmp/flux.tar.gz \
+    "https://github.com/fluxcd/flux2/releases/download/v${FLUX_VERSION}/flux_${FLUX_VERSION}_linux_amd64.tar.gz" \
+  && tar -xzf /tmp/flux.tar.gz -C /tmp \
+  && mv /tmp/flux /usr/local/bin/flux \
+  && chmod +x /usr/local/bin/flux \
+  && rm -f /tmp/flux.tar.gz
 
 # go-task
 RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
