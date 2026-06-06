@@ -46,7 +46,7 @@ task talos:gen-secret
 ## 初回
 
 ```bash
-task talos:pull-age-key
+task pull-age-key
 task talos:gen-secret
 task talos:render
 ```
@@ -56,7 +56,7 @@ task talos:render
 ## 他 PC で作業する場合
 
 ```bash
-task talos:pull-age-key
+task pull-age-key
 task talos:render
 ```
 

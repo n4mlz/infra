@@ -1,0 +1,6 @@
+# This file defines 1Password items to materialize as Kubernetes Secrets.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - cloudflare-items.yaml

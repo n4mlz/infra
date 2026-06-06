@@ -1,0 +1,6 @@
+# This file groups the external-dns HelmRelease.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - helmrelease.yaml

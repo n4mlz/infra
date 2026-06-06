@@ -2,13 +2,26 @@
 
 version: '3'
 
+vars:
+  AGE_KEY_ITEM: SOPS age key for infra repo
+  OP_VAULT: Personal
+
 includes:
   talos:
     taskfile: ./talos/Taskfile.yml
     dir: ./talos
+  flux:
+    taskfile: ./kubernetes/flux/Taskfile.yml
+    dir: .
 
 tasks:
   default:
     desc: "List available tasks."
     cmds:
       - task --list
+
+  pull-age-key:
+    desc: "Restore the SOPS age private key from 1Password into .local."
+    cmds:
+      - mkdir -p .local/sops/age
+      - op document get "{{.AGE_KEY_ITEM}}" --vault "{{.OP_VAULT}}" --output .local/sops/age/keys.txt

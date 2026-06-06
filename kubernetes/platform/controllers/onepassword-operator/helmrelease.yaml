@@ -1,0 +1,35 @@
+# This HelmRelease installs the 1Password Kubernetes Operator.
+# Reads OP_SERVICE_ACCOUNT_TOKEN from a SOPS-encrypted Kubernetes Secret in the platform namespace.
+
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: onepassword-operator
+  namespace: platform
+spec:
+  interval: 10m
+  releaseName: onepassword-operator
+  chart:
+    spec:
+      chart: connect
+      version: "2.4.1"
+      sourceRef:
+        kind: HelmRepository
+        name: 1password
+        namespace: flux-system
+      interval: 24h
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    connect:
+      create: false
+    operator:
+      create: true
+      authMethod: service-account
+      serviceAccountToken:
+        name: onepassword-service-account-token
+        key: token

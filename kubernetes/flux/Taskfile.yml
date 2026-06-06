@@ -1,0 +1,16 @@
+# This Taskfile contains bootstrap tasks for Flux that are intentionally outside Git reconciliation.
+# The sops-age Secret is the trust anchor Flux needs to decrypt SOPS-encrypted manifests.
+# Run `task pull-age-key` first to restore the age private key from 1Password.
+
+version: '3'
+
+tasks:
+  bootstrap-sops:
+    desc: "Create or update the sops-age Secret in flux-system for Flux SOPS decryption. Requires age key in .local/sops/age/keys.txt."
+    cmds:
+      - test -f .local/sops/age/keys.txt
+      - |
+        kubectl -n flux-system create secret generic sops-age \
+          --from-file=age.agekey=.local/sops/age/keys.txt \
+          --dry-run=client -o yaml \
+          | kubectl apply -f -

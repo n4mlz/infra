@@ -1,5 +1,5 @@
 # This Taskfile defines Talos operations using talhelper.
-# The SOPS age private key is stored in 1Password and restored into .local before rendering.
+# The SOPS age private key is restored by `task pull-age-key` (root Taskfile) before rendering.
 
 version: '3'
 
@@ -7,16 +7,8 @@ vars:
   CLUSTER_NAME: n4mlz-cluster
   OUT_DIR: ../.local/talos/clusterconfig
   AGE_KEY_FILE: ../.local/sops/age/keys.txt
-  AGE_KEY_ITEM: SOPS age key for infra repo
-  OP_VAULT: Personal
 
 tasks:
-  pull-age-key:
-    desc: "Restore SOPS age private key from 1Password."
-    cmds:
-      - mkdir -p ../.local/sops/age
-      - op document get "{{.AGE_KEY_ITEM}}" --vault "{{.OP_VAULT}}" --output "{{.AGE_KEY_FILE}}"
-
   gen-secret:
     desc: "Generate and encrypt Talos secrets. Run only once for a new cluster."
     cmds:
