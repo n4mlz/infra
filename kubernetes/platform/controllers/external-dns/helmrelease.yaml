@@ -33,7 +33,7 @@ spec:
         valueFrom:
           secretKeyRef:
             name: cloudflare-external-dns-token
-            key: password
+            key: token
 
     sources:
       - service
