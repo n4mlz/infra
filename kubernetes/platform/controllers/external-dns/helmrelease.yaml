@@ -39,6 +39,9 @@ spec:
       - service
       - ingress
 
+    domainFilters:
+      - n4mlz.dev
+
     policy: upsert-only
     registry: txt
     txtOwnerId: n4mlz-cluster
