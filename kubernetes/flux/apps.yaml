@@ -9,8 +9,6 @@ spec:
   interval: 10m
   path: ./kubernetes/apps
   prune: true
-  wait: true
-  timeout: 5m
   dependsOn:
     - name: platform-config
   sourceRef:

@@ -9,7 +9,6 @@ spec:
   interval: 10m
   path: ./kubernetes/platform/controllers
   prune: true
-  wait: true
   timeout: 10m
   sourceRef:
     kind: GitRepository
