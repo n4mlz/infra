@@ -1,0 +1,44 @@
+# This HelmRelease installs external-dns for Cloudflare-managed zones.
+# The Cloudflare token is materialized from 1Password by the operator.
+
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: external-dns
+  namespace: platform
+spec:
+  interval: 10m
+  releaseName: external-dns
+  chart:
+    spec:
+      chart: external-dns
+      version: "1.21.1"
+      sourceRef:
+        kind: HelmRepository
+        name: external-dns
+        namespace: flux-system
+      interval: 24h
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    provider:
+      name: cloudflare
+
+    env:
+      - name: CF_API_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: cloudflare-external-dns-token
+            key: password
+
+    sources:
+      - service
+      - ingress
+
+    policy: upsert-only
+    registry: txt
+    txtOwnerId: n4mlz-cluster

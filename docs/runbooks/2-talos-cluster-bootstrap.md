@@ -60,7 +60,7 @@ talosctl get disks --insecure --nodes "$CP1_BOOT_IP"
 ### 4. SOPS age key を復元する
 
 ```bash
-task talos:pull-age-key
+task pull-age-key
 ```
 
 ### 5. Secrets を生成する
