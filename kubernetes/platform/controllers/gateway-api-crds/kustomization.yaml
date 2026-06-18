@@ -9,4 +9,3 @@ resources:
   - crds/gateway.networking.k8s.io_referencegrants.yaml
   - crds/gateway.networking.k8s.io_grpcroutes.yaml
   - crds/gateway.networking.k8s.io_tlsroutes.yaml
-  - crds/gateway.networking.k8s.io_backendtlspolicies.yaml

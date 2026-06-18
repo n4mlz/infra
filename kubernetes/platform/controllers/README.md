@@ -6,7 +6,7 @@
 
 | controller | 用途 |
 |------------|------|
-| gateway-api-crds | Gateway API CRD（v1.5.1, vendor） |
+| gateway-api-crds | Gateway API CRD（Cilium 1.19 互換の v1.4.1, vendor） |
 | cilium | CNI（ネットワーク） + Gateway API + L2 Announcement |
 | onepassword-operator | 1Password → Kubernetes Secret 変換 |
 | cert-manager | TLS 証明書の自動発行・更新 |
