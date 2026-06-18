@@ -13,7 +13,7 @@
 - Docker（または devcontainer 対応の Podman）
 - Git
 - Dev Containers 拡張機能を入れた VS Code（または devcontainer CLI）
-- 認証済みの 1Password デスクトップアプリまたは CLI
+- 1Password CLI（`eval $(op signin)` で手動サインイン）
 - Tailscale 接続済み（Proxmox API への到達用）
 
 ## 使い方
@@ -68,3 +68,7 @@ tofu plan
 - `.local/` ディレクトリは gitignore され、ホストからマウント
 - 認証情報は 1Password CLI で注入。ファイルには保存しない
 - 作業後、`.local/` は安全に削除・再取得可能
+
+## 環境変数
+
+`KUBECONFIG` と `TALOSCONFIG` は `devcontainer.json` の `containerEnv` で自動設定される。

@@ -24,7 +24,8 @@ platform/
   controllers/
     namespaces.yaml         # platform, apps, smoke-test
     sources.yaml            # HelmRepository ×4
-    cilium/                 # Cilium HelmRelease
+    gateway-api-crds/       # Gateway API CRD v1.5.1 (vendor)
+    cilium/                 # Cilium HelmRelease + Gateway API + L2 Announcement
     onepassword-operator/   # 1Password Operator + SOPS token
       secrets/              # SOPS 暗号化 Secret manifest
     cert-manager/           # cert-manager HelmRelease
@@ -32,9 +33,11 @@ platform/
   config/
     onepassword-items/      # 1Password → Kubernetes Secret
     clusterissuers/         # cert-manager ClusterIssuer
+    loadbalancer/           # Cilium LB IPAM + L2 Announcement
+    gateway/                # shared public Gateway
 
 apps/
-  smoke-test/               # 検証用 workload
+  smoke-test/               # 検証用 workload (HTTPRoute → Gateway)
 ```
 
 ## Kustomize 参照原則

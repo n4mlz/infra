@@ -63,7 +63,8 @@ flux get kustomizations -A
 
 ```bash
 flux reconcile source git flux-system -n flux-system
-flux reconcile kustomization platform -n flux-system --with-source
+flux reconcile kustomization platform-controllers -n flux-system --with-source
+flux reconcile kustomization platform-config -n flux-system --with-source
 flux reconcile kustomization apps -n flux-system --with-source
 ```
 
@@ -106,15 +107,18 @@ kubectl -n smoke-test get deploy nginx
 ```
 kubernetes/
   flux/                          # Flux 自身と同期定義
-    flux-system/                 # Flux bootstrap 生成物
+    flux-system/                 # Flux bootstrap 生成物 (+ SOPS decryption)
     kustomization.yaml
-    platform.yaml                # Flux Kustomization → platform
-    apps.yaml                    # Flux Kustomization → apps
-  platform/                      # クラスタ基盤
-    namespaces.yaml              # baseline namespaces
-    sources.yaml                 # HelmRepository
-    cilium/                      # Cilium HelmRelease
-  apps/                          # アプリケーション workload
+    platform-controllers.yaml    # Flux Kustomization → platform/controllers
+    platform-config.yaml         # Flux Kustomization → platform/config (dependsOn: platform-controllers)
+    apps.yaml                    # Flux Kustomization → apps (dependsOn: platform-config)
+  platform/
+    controllers/
+      namespaces.yaml            # baseline namespaces
+      sources.yaml               # HelmRepository
+      cilium/                    # Cilium HelmRelease
+    config/                      # 後続ステップで追加
+  apps/
     smoke-test/                  # 検証用 workload
 ```
 

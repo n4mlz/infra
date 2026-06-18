@@ -58,3 +58,9 @@ variable "talos_boot_order" {
   description = "Boot order for Talos VMs. Default is disk-only (post-install)."
   default     = ["scsi0"]
 }
+
+variable "vm_public_vlan_id" {
+  type        = number
+  default     = null
+  description = "VLAN ID for the public NIC on worker nodes. Set to null to skip second NIC."
+}

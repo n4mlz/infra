@@ -13,6 +13,9 @@ includes:
   flux:
     taskfile: ./kubernetes/flux/Taskfile.yml
     dir: .
+  gateway-api-crds:
+    taskfile: ./kubernetes/platform/controllers/gateway-api-crds/Taskfile.yml
+    dir: ./kubernetes/platform/controllers/gateway-api-crds
 
 tasks:
   default:

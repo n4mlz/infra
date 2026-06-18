@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - namespaces.yaml
   - sources.yaml
+  - gateway-api-crds
   - cilium
   - onepassword-operator
   - cert-manager

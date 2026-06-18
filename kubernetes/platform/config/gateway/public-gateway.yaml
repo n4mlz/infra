@@ -1,0 +1,35 @@
+# This Gateway is the shared public HTTPS entrypoint.
+# It explicitly requests 163.220.236.73 from Cilium LB IPAM.
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: public-gateway
+  namespace: platform
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+spec:
+  gatewayClassName: cilium
+  infrastructure:
+    annotations:
+      lbipam.cilium.io/ips: "163.220.236.73"
+  listeners:
+    - name: http
+      hostname: "*.n4mlz.dev"
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https
+      hostname: "*.n4mlz.dev"
+      port: 443
+      protocol: HTTPS
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: wildcard-n4mlz-dev-tls
+      allowedRoutes:
+        namespaces:
+          from: All

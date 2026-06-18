@@ -33,6 +33,16 @@ spec:
     k8sServiceHost: localhost
     k8sServicePort: 7445
 
+    gatewayAPI:
+      enabled: true
+
+    l2announcements:
+      enabled: true
+
+    k8sClientRateLimit:
+      qps: 20
+      burst: 40
+
     securityContext:
       capabilities:
         ciliumAgent:
