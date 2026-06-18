@@ -1,0 +1,7 @@
+# This patch keeps public VLAN interfaces addressless.
+# It is applied only to nodes that have eth1 connected to the public VLAN.
+# eth1 is used only for Cilium L2 IPv4 ARP announcements; IPv6 is disabled on it.
+
+machine:
+  sysctls:
+    net.ipv6.conf.eth1.disable_ipv6: "1"

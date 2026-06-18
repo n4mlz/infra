@@ -39,6 +39,14 @@ resource "proxmox_virtual_environment_vm" "this" {
     bridge = var.bridge
   }
 
+  dynamic "network_device" {
+    for_each = var.public_vlan_id != null ? [1] : []
+    content {
+      bridge  = var.bridge
+      vlan_id = var.public_vlan_id
+    }
+  }
+
   agent {
     enabled = true
     timeout = "30s"

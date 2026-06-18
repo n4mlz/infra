@@ -86,11 +86,11 @@ task talos:render
 1台ずつ実行する。
 
 ```bash
-NODE=cp-01 BOOT_IP="$CP1_BOOT_IP" task talos:apply
-NODE=cp-02 BOOT_IP="$CP2_BOOT_IP" task talos:apply
-NODE=cp-03 BOOT_IP="$CP3_BOOT_IP" task talos:apply
-NODE=wk-01 BOOT_IP="$WK1_BOOT_IP" task talos:apply
-NODE=wk-02 BOOT_IP="$WK2_BOOT_IP" task talos:apply
+NODE=cp-01 BOOT_IP="$CP1_BOOT_IP" task talos:apply-initial
+NODE=cp-02 BOOT_IP="$CP2_BOOT_IP" task talos:apply-initial
+NODE=cp-03 BOOT_IP="$CP3_BOOT_IP" task talos:apply-initial
+NODE=wk-01 BOOT_IP="$WK1_BOOT_IP" task talos:apply-initial
+NODE=wk-02 BOOT_IP="$WK2_BOOT_IP" task talos:apply-initial
 ```
 
 各ノードが reboot して Talos のインストールが開始される。数分待つ。

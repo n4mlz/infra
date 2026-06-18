@@ -53,3 +53,9 @@ variable "boot_order" {
   default     = ["scsi0"]
   description = "Boot order for the VM. Default is disk-only."
 }
+
+variable "public_vlan_id" {
+  type        = number
+  default     = null
+  description = "VLAN ID for the optional public NIC on gateway workers. Only set for gateway workers."
+}

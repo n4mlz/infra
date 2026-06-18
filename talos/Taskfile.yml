@@ -22,14 +22,23 @@ tasks:
       - mkdir -p "{{.OUT_DIR}}"
       - SOPS_AGE_KEY_FILE={{.AGE_KEY_FILE}} talhelper genconfig --config-file talconfig.yaml --secret-file talsecret.sops.yaml --out-dir "{{.OUT_DIR}}"
 
-  apply:
-    desc: "Apply one Talos config. Usage: NODE=cp-01 BOOT_IP=10.240.255.118 task talos:apply"
+  apply-initial:
+    desc: "Apply initial Talos config to a node in maintenance mode. Usage: NODE=cp-01 BOOT_IP=<dhcp-ip> task talos:apply-initial"
     requires:
       vars:
         - NODE
         - BOOT_IP
     cmds:
       - talosctl apply-config --insecure --nodes "{{.BOOT_IP}}" --file "{{.OUT_DIR}}/{{.CLUSTER_NAME}}-{{.NODE}}.yaml"
+
+  apply:
+    desc: "Apply updated Talos config to a running node. Usage: NODE=wk-01 NODE_IP=10.240.30.4 task talos:apply"
+    requires:
+      vars:
+        - NODE
+        - NODE_IP
+    cmds:
+      - TALOSCONFIG={{.OUT_DIR}}/talosconfig talosctl apply-config --file "{{.OUT_DIR}}/{{.CLUSTER_NAME}}-{{.NODE}}.yaml" --nodes "{{.NODE_IP}}"
 
   bootstrap:
     desc: "Bootstrap etcd on the first control-plane node. Run exactly once."

@@ -67,6 +67,8 @@ nodes:
     nameservers:
       - 1.1.1.1
       - 8.8.8.8
+    patches:
+      - "@./patches/addressless-public-vlan.yaml"
     networkInterfaces:
       - interface: eth0
         addresses:
@@ -74,6 +76,8 @@ nodes:
         routes:
           - network: 0.0.0.0/0
             gateway: 10.240.255.254
+      - interface: eth1
+        dhcp: false
 
   - hostname: wk-02
     controlPlane: false
@@ -82,6 +86,8 @@ nodes:
     nameservers:
       - 1.1.1.1
       - 8.8.8.8
+    patches:
+      - "@./patches/addressless-public-vlan.yaml"
     networkInterfaces:
       - interface: eth0
         addresses:
@@ -89,3 +95,5 @@ nodes:
         routes:
           - network: 0.0.0.0/0
             gateway: 10.240.255.254
+      - interface: eth1
+        dhcp: false

@@ -1,4 +1,4 @@
-# This file defines a minimal workload used to validate Flux application reconciliation.
+# This file defines a minimal workload exposed through Gateway API.
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
@@ -6,4 +6,5 @@ resources:
   - namespace.yaml
   - deployment.yaml
   - service.yaml
+  - httproute.yaml
   - certificate.yaml

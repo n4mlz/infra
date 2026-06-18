@@ -1,0 +1,12 @@
+# This file installs pinned Gateway API CRDs required by Cilium Gateway API.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - crds/gateway.networking.k8s.io_gatewayclasses.yaml
+  - crds/gateway.networking.k8s.io_gateways.yaml
+  - crds/gateway.networking.k8s.io_httproutes.yaml
+  - crds/gateway.networking.k8s.io_referencegrants.yaml
+  - crds/gateway.networking.k8s.io_grpcroutes.yaml
+  - crds/gateway.networking.k8s.io_tlsroutes.yaml
+  - crds/gateway.networking.k8s.io_backendtlspolicies.yaml

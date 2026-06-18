@@ -1,0 +1,22 @@
+# This Taskfile manages Gateway API CRD lifecycle.
+# CRDs are vendored from upstream because there is no official Helm chart.
+
+version: "3"
+
+vars:
+  GATEWAY_API_VERSION: v1.5.1
+  BASE_URL: https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/{{.GATEWAY_API_VERSION}}/config/crd/standard
+  CRD_DIR: crds
+
+tasks:
+  update:
+    desc: "Update vendored Gateway API CRDs from upstream."
+    cmds:
+      - mkdir -p "{{.CRD_DIR}}"
+      - curl -fsSLO --output-dir "{{.CRD_DIR}}" "{{.BASE_URL}}/gateway.networking.k8s.io_gatewayclasses.yaml"
+      - curl -fsSLO --output-dir "{{.CRD_DIR}}" "{{.BASE_URL}}/gateway.networking.k8s.io_gateways.yaml"
+      - curl -fsSLO --output-dir "{{.CRD_DIR}}" "{{.BASE_URL}}/gateway.networking.k8s.io_httproutes.yaml"
+      - curl -fsSLO --output-dir "{{.CRD_DIR}}" "{{.BASE_URL}}/gateway.networking.k8s.io_referencegrants.yaml"
+      - curl -fsSLO --output-dir "{{.CRD_DIR}}" "{{.BASE_URL}}/gateway.networking.k8s.io_grpcroutes.yaml"
+      - curl -fsSLO --output-dir "{{.CRD_DIR}}" "{{.BASE_URL}}/gateway.networking.k8s.io_tlsroutes.yaml"
+      - curl -fsSLO --output-dir "{{.CRD_DIR}}" "{{.BASE_URL}}/gateway.networking.k8s.io_backendtlspolicies.yaml"

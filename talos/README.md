@@ -63,7 +63,7 @@ task talos:render
 ## ノード適用
 
 ```bash
-NODE=cp-01 BOOT_IP=<maintenance-ip> task talos:apply
+NODE=cp-01 BOOT_IP=<maintenance-ip> task talos:apply-initial
 ```
 
 ## Bootstrap
@@ -78,10 +78,18 @@ task talos:status
 
 ```
 talos/
-  talconfig.yaml          # cluster topology definition
+  talconfig.yaml          # cluster topology definition (wk-01/02 have eth1)
   talsecret.sops.yaml     # encrypted Talos secrets
-  cilium-values.yaml      # Cilium Helm values (initial bootstrap only。Flux 移行後は kubernetes/platform/cilium/helmrelease.yaml が canonical source)
+  cilium-values.yaml      # Cilium Helm values (initial bootstrap only)
   patches/
     cni.yaml              # CNI none + kube-proxy disabled
-  Taskfile.yml            # talos operations
+    addressless-public-vlan.yaml  # disable IPv6 SLAAC on public VLAN interface
+  Taskfile.yml            # talos operations (apply-initial, apply, bootstrap, render)
 ```
+
+## Gateway Workers
+
+wk-01 と wk-02 は public Gateway トラフィックを処理するため、以下が設定されている：
+- `eth1`: public VLAN 用 NIC（IP アドレスなし、DHCP 無効）
+- Cilium L2 Announcement は `interfaces: ^eth1$` により eth1 を持つ node だけを候補にする
+- node label は不要（public VLAN NIC の有無が gateway capability を表す）

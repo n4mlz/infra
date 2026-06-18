@@ -6,7 +6,8 @@
 
 | controller | 用途 |
 |------------|------|
-| cilium | CNI（ネットワーク） |
+| gateway-api-crds | Gateway API CRD（v1.5.1, vendor） |
+| cilium | CNI（ネットワーク） + Gateway API + L2 Announcement |
 | onepassword-operator | 1Password → Kubernetes Secret 変換 |
 | cert-manager | TLS 証明書の自動発行・更新 |
 | external-dns | Cloudflare DNS record の自動管理 |

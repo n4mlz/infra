@@ -36,8 +36,8 @@ spec:
             key: token
 
     sources:
+      - gateway-httproute
       - service
-      - ingress
 
     domainFilters:
       - n4mlz.dev

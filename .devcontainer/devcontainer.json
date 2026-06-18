@@ -9,6 +9,10 @@
     "source=${localWorkspaceFolder},target=/workspace/infra,type=bind"
   ],
   "runArgs": ["--dns=100.100.100.100", "--dns=1.1.1.1"],
+  "containerEnv": {
+    "KUBECONFIG": "/workspace/infra/.local/kubeconfig",
+    "TALOSCONFIG": "/workspace/infra/.local/talos/clusterconfig/talosconfig"
+  },
   "postCreateCommand": "bash .devcontainer/postCreateCommand.sh",
   "customizations": {
     "vscode": {

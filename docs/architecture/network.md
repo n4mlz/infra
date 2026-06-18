@@ -9,12 +9,17 @@ Tailscale Tailnet (100.64.0.0/10)
   └── <subnet-router-vm> (Tailscale subnet router)
         └── 10.240.0.0/16 (advertised route)
               └── 10.240.30.0/28 (Talos Kubernetes nodes)
-                    ├── cp-01: 10.240.30.1
-                    ├── cp-02: 10.240.30.2
-                    ├── cp-03: 10.240.30.3
-                    ├── wk-01: 10.240.30.4
-                    ├── wk-02: 10.240.30.5
-                    └── (reserved: .6 ~ .8)
+                     ├── cp-01: 10.240.30.1
+                     ├── cp-02: 10.240.30.2
+                     ├── cp-03: 10.240.30.3
+                     ├── wk-01: 10.240.30.4
+                     ├── wk-02: 10.240.30.5
+                     └── (reserved: .6 ~ .8)
+
+Public VLAN (internet-facing)
+  └── 163.220.236.73-76 (Cilium LoadBalancer IPAM pool)
+        ├── .73: shared HTTPS Gateway
+        └── .74-76: reserved
 ```
 
 ## Talos Node Network
@@ -25,6 +30,36 @@ Tailscale Tailnet (100.64.0.0/10)
 | Kubernetes ノード用範囲 | 10.240.30.0/28 |
 | デフォルトゲートウェイ | 10.240.255.254 |
 | DNS | 8.8.8.8, 1.1.1.1 |
+
+## Gateway Worker
+
+wk-01, wk-02 は public VLAN に接続された 2 枚目の NIC（eth1）を持つ。
+eth1 には IP アドレスは付与されず、Cilium L2 Announcement が LoadBalancer VIP の ARP/NDP に応答するために使われる。
+
+| ノード | eth0 (management) | eth1 (public VLAN) |
+|--------|-------------------|-------------------|
+| wk-01 | 10.240.30.4/16 | no IP, dhcp:false |
+| wk-02 | 10.240.30.5/16 | no IP, dhcp:false |
+
+control-plane（cp-01 ~ cp-03）は public VLAN に接続しない。
+
+## LoadBalancer IP Architecture
+
+```text
+external client
+  -> Cloudflare DNS (smoke-test.n4mlz.dev -> 163.220.236.73)
+  -> upstream router
+  -> public VLAN (L2)
+  -> Cilium L2 Announcement (worker responds to ARP)
+  -> Cilium LoadBalancer Service
+  -> Gateway (TLS termination + routing)
+  -> HTTPRoute -> Service -> Pod
+```
+
+- Cilium LB IPAM: `CiliumLoadBalancerIPPool` が `Service type=LoadBalancer` に public IP を割り当てる
+- Cilium L2 Announcement: worker が public VLAN 上の LoadBalancer VIP に対して ARP/NDP 代理応答。VIP は node の NIC に実アドレスとして設定されない
+- Gateway: `platform` namespace の `public-gateway`。`163.220.236.73` を明示要求（`lbipam.cilium.io/ips`）
+- HTTPRoute: アプリ namespace 側で hostname/path を Service に紐づけ
 
 ## Tailscale Subnet Route
 
