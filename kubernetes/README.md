@@ -24,7 +24,7 @@ platform/
   controllers/
     namespaces.yaml         # platform, apps, smoke-test
     sources.yaml            # HelmRepository ×4
-    gateway-api-crds/       # Gateway API CRD v1.5.1 (vendor)
+    gateway-api-crds/       # Gateway API CRD v1.4.1 (vendor, Cilium 1.19 互換)
     cilium/                 # Cilium HelmRelease + Gateway API + L2 Announcement
     onepassword-operator/   # 1Password Operator + SOPS token
       secrets/              # SOPS 暗号化 Secret manifest

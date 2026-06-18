@@ -87,7 +87,7 @@ curl -vk https://smoke-test.n4mlz.dev/
 
 ```
 controllers/
-  gateway-api-crds/     # Gateway API CRD v1.5.1 (vendor)
+  gateway-api-crds/     # Gateway API CRD v1.4.1 (vendor, Cilium 1.19 互換)
   cilium/               # +gatewayAPI +l2announcements
   external-dns/         # +gateway-httproute source
 
@@ -106,6 +106,7 @@ config/
 - Gateway API CRD がインストールされているか: `kubectl get crd | grep gateway.networking.k8s.io`
 - GatewayClass `cilium` が存在するか: `kubectl get gatewayclass`
 - Cilium Gateway API が有効か: `helm -n kube-system get values cilium | grep gatewayAPI`
+- `cilium-operator` が `TLSRoute v1alpha2` 不在で落ちる場合は、Gateway API CRD が Cilium 1.19 互換の v1.4.1 から生成されているか確認する
 
 ### LoadBalancer IP が割り当たらない
 
