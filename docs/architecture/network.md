@@ -59,6 +59,7 @@ external client
 
 - Cilium LB IPAM: `CiliumLoadBalancerIPPool` が `Service type=LoadBalancer` に public IP を割り当てる
 - Cilium L2 Announcement: wk-01/wk-02 が public VLAN 上の LoadBalancer VIP に対して ARP/NDP 代理応答。VIP は node の NIC に実アドレスとして設定されない
+- Cilium devices: `eth+` を明示し、management 側の `eth0` と public VLAN 側の `eth1` の両方で kube-proxy replacement / LoadBalancer datapath を有効にする
 - Gateway: `platform` namespace の `public-gateway`。`163.220.236.73` を明示要求（`lbipam.cilium.io/ips`）
 - HTTPRoute: アプリ namespace 側で hostname/path を Service に紐づけ
 
