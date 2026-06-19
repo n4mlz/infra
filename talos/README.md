@@ -91,5 +91,4 @@ talos/
 
 wk-01 と wk-02 は public Gateway トラフィックを処理するため、以下が設定されている：
 - `eth1`: public VLAN 用 NIC（IP アドレスなし、DHCP 無効）
-- Cilium L2 Announcement は `interfaces: ^eth1$` により eth1 を持つ node だけを候補にする
-- node label は不要（public VLAN NIC の有無が gateway capability を表す）
+- Cilium L2 Announcement は `nodeSelector` で wk-01/wk-02 を選び、`interfaces: ^eth1$` で広告 interface を限定する
