@@ -35,6 +35,7 @@ Public VLAN (internet-facing)
 
 wk-01, wk-02 は public VLAN に接続された 2 枚目の NIC（eth1）を持つ。
 eth1 には IP アドレスは付与されず、Cilium L2 Announcement が LoadBalancer VIP の ARP/NDP に応答するために使われる。
+Cilium L2 Announcement は `nodeSelector` で wk-01/wk-02 だけを lease election の候補にする。
 
 | ノード | eth0 (management) | eth1 (public VLAN) |
 |--------|-------------------|-------------------|
@@ -57,7 +58,7 @@ external client
 ```
 
 - Cilium LB IPAM: `CiliumLoadBalancerIPPool` が `Service type=LoadBalancer` に public IP を割り当てる
-- Cilium L2 Announcement: worker が public VLAN 上の LoadBalancer VIP に対して ARP/NDP 代理応答。VIP は node の NIC に実アドレスとして設定されない
+- Cilium L2 Announcement: wk-01/wk-02 が public VLAN 上の LoadBalancer VIP に対して ARP/NDP 代理応答。VIP は node の NIC に実アドレスとして設定されない
 - Gateway: `platform` namespace の `public-gateway`。`163.220.236.73` を明示要求（`lbipam.cilium.io/ips`）
 - HTTPRoute: アプリ namespace 側で hostname/path を Service に紐づけ
 
