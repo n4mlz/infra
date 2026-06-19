@@ -25,6 +25,8 @@ spec:
     remediation:
       retries: 3
   values:
+    rollOutCiliumPods: true
+
     ipam:
       mode: kubernetes
 

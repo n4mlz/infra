@@ -120,6 +120,7 @@ config/
 
 - worker に eth1 が存在するか: `talosctl get links --nodes <wk-ip>`
 - Cilium の datapath device に eth1 が含まれるか: `kubectl -n kube-system exec ds/cilium -- cilium-dbg config --all | grep Devices`
+- `cilium-config` 変更後に Cilium pod が更新されているか: `kubectl -n kube-system get pods -l k8s-app=cilium -o wide`
 - CiliumL2AnnouncementPolicy の `nodeSelector` が wk-01/wk-02 を選んでいるか確認する
 - CiliumL2AnnouncementPolicy の `nodeSelector` と `interfaces` が正しいか: `kubectl describe ciliuml2announcementpolicy`
 - Lease leader が wk-01 または wk-02 か確認: `kubectl -n kube-system get lease | grep cilium-l2announce`
