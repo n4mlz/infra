@@ -1,0 +1,15 @@
+# This Certificate provisions the shared wildcard TLS Secret consumed by public-gateway.
+# It depends on the cluster-wide Cloudflare DNS01 ClusterIssuer materialized by platform config.
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-n4mlz-dev-tls
+  namespace: platform
+spec:
+  secretName: wildcard-n4mlz-dev-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.n4mlz.dev"
