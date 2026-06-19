@@ -63,7 +63,7 @@ kubectl get ciliuml2announcementpolicies.cilium.io
 kubectl -n kube-system get leases | grep cilium
 
 # HTTPRoute
-kubectl -n apps get httproute smoke-test
+kubectl -n smoke-test get httproute smoke-test
 
 # cert-manager
 kubectl -n platform get certificate
@@ -120,7 +120,15 @@ config/
 
 - worker に eth1 が存在するか: `talosctl get links --nodes <wk-ip>`
 - Cilium の datapath device に eth1 が含まれるか: `kubectl -n kube-system exec ds/cilium -- cilium-dbg config --all | grep Devices`
+- public VLAN が tagged frame として worker に入るため、Cilium Helm values の `bpf.vlanBypass` に VLAN 2033 が含まれるか確認する
 - `cilium-config` 変更後に Cilium pod が更新されているか: `kubectl -n kube-system get pods -l k8s-app=cilium -o wide`
 - CiliumL2AnnouncementPolicy の `nodeSelector` が wk-01/wk-02 を選んでいるか確認する
 - CiliumL2AnnouncementPolicy の `nodeSelector` と `interfaces` が正しいか: `kubectl describe ciliuml2announcementpolicy`
 - Lease leader が wk-01 または wk-02 か確認: `kubectl -n kube-system get lease | grep cilium-l2announce`
+
+### ARP 応答はあるが HTTP/HTTPS が timeout する
+
+- `talosctl -n 10.240.30.4 pcap -i eth1 --duration 12s` で `163.220.236.73:80/443` 宛の SYN が worker に届くか確認する
+- SYN が届いているのに SYN-ACK が返らない場合は、`kubectl -n kube-system exec <cilium-pod-on-worker> -- cilium-dbg monitor --type drop --type trace` を確認する
+- `VLAN traffic disallowed by VLAN filter` が出る場合は、public VLAN ID が `bpf.vlanBypass` と一致していない
+- Envoy 自体の確認は worker 上の Cilium Pod から `127.0.0.1:<L7LB Proxy Port>` に HTTP request を送り、Gateway route/backend と node datapath を分けて切り分ける
