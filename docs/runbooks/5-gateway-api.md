@@ -67,7 +67,7 @@ kubectl -n apps get httproute smoke-test
 
 # cert-manager
 kubectl -n platform get certificate
-kubectl -n apps get certificate smoke-test-tls
+kubectl -n platform get certificate wildcard-n4mlz-dev-tls
 
 # external-dns
 kubectl -n platform logs deploy/external-dns --tail=50
@@ -96,6 +96,7 @@ config/
     cilium-lb-ipam.yaml  # CiliumLoadBalancerIPPool (163.220.236.73-76)
     cilium-l2-announcement.yaml  # CiliumL2AnnouncementPolicy (eth1, worker-only)
   gateway/
+    certificate.yaml     # shared wildcard TLS Certificate (*.n4mlz.dev, production issuer)
     public-gateway.yaml  # shared HTTPS Gateway (163.220.236.73, *.n4mlz.dev)
 ```
 
@@ -106,6 +107,7 @@ config/
 - Gateway API CRD がインストールされているか: `kubectl get crd | grep gateway.networking.k8s.io`
 - GatewayClass `cilium` が存在するか: `kubectl get gatewayclass`
 - Cilium Gateway API が有効か: `helm -n kube-system get values cilium | grep gatewayAPI`
+- HTTPS listener が `Programmed=True` にならない場合は、`platform/wildcard-n4mlz-dev-tls` Secret が Certificate から生成されているか確認する
 - `cilium-operator` が `TLSRoute v1alpha2` 不在で落ちる場合は、Gateway API CRD が Cilium 1.19 互換の v1.4.1 から生成されているか確認する
 
 ### LoadBalancer IP が割り当たらない

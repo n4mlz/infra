@@ -91,7 +91,7 @@ flux get kustomizations -A
 flux get helmreleases -A
 kubectl get pods -n platform
 kubectl get clusterissuer
-kubectl -n smoke-test get certificate smoke-test-tls
+kubectl -n platform get certificate wildcard-n4mlz-dev-tls
 ```
 
 cert-manager 検証：
@@ -106,21 +106,21 @@ external-dns 検証：
 kubectl -n platform logs deploy/external-dns --tail=100
 ```
 
-cert-test の Certificate が `Ready=True` になり、`smoke-test-tls` Secret が生成されたら成功。
+Gateway 用の wildcard Certificate が `Ready=True` になり、`wildcard-n4mlz-dev-tls` Secret が生成されたら成功。
 
 ## トラブルシュート
 
 ### cert-manager ClusterIssuer が Ready にならない
 
-- `kubectl describe clusterissuer letsencrypt-staging` でエラー確認
+- `kubectl describe clusterissuer letsencrypt-production` でエラー確認
 - Cloudflare token Secret が存在するか: `kubectl -n platform get secret cloudflare-cert-manager-token`
 - `apiTokenSecretRef.key` が Secret のキーと一致しているか
 - Cloudflare API token に `Zone:DNS:Edit` 権限があるか
 
 ### Certificate が Ready にならない
 
-- `kubectl -n smoke-test describe certificate smoke-test-tls` でエラー確認
-- `kubectl -n smoke-test get certificaterequest,order,challenge` で中間リソースを確認
+- `kubectl -n platform describe certificate wildcard-n4mlz-dev-tls` でエラー確認
+- `kubectl -n platform get certificaterequest,order,challenge` で中間リソースを確認
 - DNS01 challenge の TXT record が Cloudflare DNS に作成されているか
 
 ### external-dns が record を作成しない
