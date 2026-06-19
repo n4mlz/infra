@@ -17,9 +17,10 @@ Tailscale Tailnet (100.64.0.0/10)
                      └── (reserved: .6 ~ .8)
 
 Public VLAN (internet-facing)
-  └── 163.220.236.73-76 (Cilium LoadBalancer IPAM pool)
-        ├── .73: shared HTTPS Gateway
-        └── .74-76: reserved
+  └── VLAN 2033 / 163.220.236.0/23
+      └── 163.220.236.73-76 (Cilium LoadBalancer IPAM pool)
+          ├── .73: shared HTTPS Gateway
+          └── .74-76: reserved
 ```
 
 ## Talos Node Network
@@ -44,6 +45,10 @@ Cilium L2 Announcement は `nodeSelector` で wk-01/wk-02 だけを lease electi
 
 control-plane（cp-01 ~ cp-03）は public VLAN に接続しない。
 
+eth1 は上流スイッチから VLAN 2033 の tagged frame を受ける。
+Cilium の BPF datapath は VLAN tagged frame を既定では filter するため、`bpf.vlanBypass` で VLAN 2033 だけを許可する。
+`[0]` による全 VLAN 許可は使わず、public ingress に必要な VLAN だけを IaC で明示する。
+
 ## LoadBalancer IP Architecture
 
 ```text
@@ -60,6 +65,7 @@ external client
 - Cilium LB IPAM: `CiliumLoadBalancerIPPool` が `Service type=LoadBalancer` に public IP を割り当てる
 - Cilium L2 Announcement: wk-01/wk-02 が public VLAN 上の LoadBalancer VIP に対して ARP/NDP 代理応答。VIP は node の NIC に実アドレスとして設定されない
 - Cilium devices: `eth+` を明示し、management 側の `eth0` と public VLAN 側の `eth1` の両方で kube-proxy replacement / LoadBalancer datapath を有効にする
+- Cilium VLAN bypass: public VLAN 2033 の tagged frame を Cilium BPF datapath で許可する
 - Cilium pod rollout: HelmRelease の `rollOutCiliumPods: true` により、`cilium-config` 変更時に agent pod を自動更新する
 - Gateway: `platform` namespace の `public-gateway`。`163.220.236.73` を明示要求（`lbipam.cilium.io/ips`）
 - HTTPRoute: アプリ namespace 側で hostname/path を Service に紐づけ
