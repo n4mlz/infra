@@ -1,0 +1,19 @@
+# This HelmRelease installs Istio CRDs and base cluster-scoped resources.
+# It must be applied before istiod.
+
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: istio-base
+  namespace: istio-system
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: base
+      version: "1.30.0"
+      sourceRef:
+        kind: HelmRepository
+        name: istio
+        namespace: flux-system
+      interval: 24h

@@ -4,7 +4,7 @@
 version: "3"
 
 vars:
-  GATEWAY_API_VERSION: v1.4.1
+  GATEWAY_API_VERSION: v1.5.1
   STANDARD_BASE_URL: https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/{{.GATEWAY_API_VERSION}}/config/crd/standard
   EXPERIMENTAL_BASE_URL: https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/{{.GATEWAY_API_VERSION}}/config/crd/experimental
   CRD_DIR: crds

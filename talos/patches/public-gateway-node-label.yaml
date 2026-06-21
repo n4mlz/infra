@@ -1,0 +1,5 @@
+# Applies a node label so kube-vip DaemonSet schedules on public-gateway workers.
+machine:
+  kubelet:
+    nodeLabels:
+      infra.n4mlz.dev/public-gateway: "true"

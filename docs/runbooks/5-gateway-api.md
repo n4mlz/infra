@@ -2,8 +2,9 @@
 
 ## Goal
 
-Cilium Gateway API による外部 HTTPS 入口を完成させる。
-L2 Announcement、LB IPAM、Gateway、HTTPRoute、cert-manager TLS、external-dns DNS を GitOps 管理下に置く。
+Istio Gateway API による外部 HTTPS 入口を完成させる。
+kube-vip が LB VIP を eth1 に付与し、Istio Gateway が L7 ルーティングを行う。
+Gateway、HTTPRoute、cert-manager TLS、external-dns DNS を GitOps 管理下に置く。
 
 ## Prerequisites
 
@@ -37,7 +38,18 @@ NODE=wk-01 NODE_IP=10.240.30.4 task talos:apply
 NODE=wk-02 NODE_IP=10.240.30.5 task talos:apply
 ```
 
-### 3. Reconcile
+### 3. Talos config 再適用（node label patch を含む）
+
+`talos/patches/public-gateway-node-label.yaml` に `infra.n4mlz.dev/public-gateway=true` が IaC 化されている。
+
+```bash
+task pull-age-key
+task talos:render
+NODE=wk-01 NODE_IP=10.240.30.4 task talos:apply
+NODE=wk-02 NODE_IP=10.240.30.5 task talos:apply
+```
+
+### 4. Reconcile
 
 ```bash
 export KUBECONFIG="$PWD/.local/kubeconfig"
@@ -49,18 +61,21 @@ flux reconcile kustomization platform-config -n flux-system --with-source
 flux reconcile kustomization apps -n flux-system --with-source
 ```
 
-### 4. 状態確認
+### 5. 状態確認
 
 ```bash
-# Cilium Gateway
+# Istio Gateway
 kubectl get gatewayclass
 kubectl -n platform get gateway
 kubectl get svc -A | grep public-gateway
+kubectl -n istio-system get pods
 
-# LB IPAM + L2 Announcement
-kubectl get ciliumloadbalancerippools.cilium.io
-kubectl get ciliuml2announcementpolicies.cilium.io
-kubectl -n kube-system get leases | grep cilium
+# kube-vip
+kubectl -n kube-vip-svc get pods
+kubectl -n kube-vip-svc logs ds/kube-vip --tail=20
+
+# Cilium KPR
+kubectl -n kube-system exec ds/cilium -- cilium-dbg status --verbose | grep -iE 'kubeproxy|devices'
 
 # HTTPRoute
 kubectl -n smoke-test get httproute smoke-test
@@ -73,11 +88,18 @@ kubectl -n platform get certificate wildcard-n4mlz-dev-tls
 kubectl -n platform logs deploy/external-dns --tail=50
 ```
 
-### 5. 接続確認
+### 6. 接続確認
 
 ```bash
-# LAN 内から LoadBalancer IP へ直接
-curl -v http://163.220.236.73 -H "Host: smoke-test.n4mlz.dev"
+# EXTERNAL-IP 確認
+kubectl get svc -A | grep LoadBalancer
+
+# VIP が leader node の eth1 に実際に付いているか確認
+talosctl -n 10.240.30.4 get addresses | grep eth1
+talosctl -n 10.240.30.5 get addresses | grep eth1
+
+# 外部から HTTP
+curl -v http://<EXTERNAL-IP> -H "Host: smoke-test.n4mlz.dev"
 
 # DNS 経由
 curl -vk https://smoke-test.n4mlz.dev/
@@ -85,50 +107,52 @@ curl -vk https://smoke-test.n4mlz.dev/
 
 ## 構成
 
-```
-controllers/
-  gateway-api-crds/     # Gateway API CRD v1.4.1 (vendor, Cilium 1.19 互換)
-  cilium/               # +gatewayAPI +l2announcements
-  external-dns/         # +gateway-httproute source
+```text
+controllers:
+  gateway-api-crds/       # Gateway API CRD v1.5.1 (vendor, Istio 互換)
+  cilium/                 # CNI + kubeProxyReplacement (gatewayAPI disabled)
+  kube-vip/               # kube-vip DaemonSet (VIP → eth1) + kube-vip-cloud-provider (IPAM)
+  istio/                  # Istio base + istiod (Gateway API automated deployment)
+  external-dns/           # +gateway-httproute source
 
-config/
-  loadbalancer/
-    cilium-lb-ipam.yaml  # CiliumLoadBalancerIPPool (163.220.236.73-76)
-    cilium-l2-announcement.yaml  # CiliumL2AnnouncementPolicy (eth1, worker-only)
+config:
   gateway/
-    certificate.yaml     # shared wildcard TLS Certificate (*.n4mlz.dev, production issuer)
-    public-gateway.yaml  # shared HTTPS Gateway (163.220.236.73, *.n4mlz.dev)
+    istio-gatewayclass.yaml  # GatewayClass istio (controllerName: istio.io/gateway-controller)
+    certificate.yaml         # shared wildcard TLS Certificate (*.n4mlz.dev, production issuer)
+    public-gateway.yaml      # shared HTTPS Gateway (gatewayClassName: istio)
 ```
+
+## kube-vip IP pool
+
+`163.220.236.73-163.220.236.76` を `kube-vip-cloud-provider` の `range-global` で管理。
 
 ## トラブルシュート
 
 ### Gateway が Accepted/Programmed にならない
 
 - Gateway API CRD がインストールされているか: `kubectl get crd | grep gateway.networking.k8s.io`
-- GatewayClass `cilium` が存在するか: `kubectl get gatewayclass`
-- Cilium Gateway API が有効か: `helm -n kube-system get values cilium | grep gatewayAPI`
-- HTTPS listener が `Programmed=True` にならない場合は、`platform/wildcard-n4mlz-dev-tls` Secret が Certificate から生成されているか確認する
-- `cilium-operator` が `TLSRoute v1alpha2` 不在で落ちる場合は、Gateway API CRD が Cilium 1.19 互換の v1.4.1 から生成されているか確認する
+- GatewayClass `istio` が存在し Accepted か: `kubectl get gatewayclass istio`
+- Istio が Running か: `kubectl -n istio-system get pods`
 
 ### LoadBalancer IP が割り当たらない
 
-- LB IPAM pool が存在するか: `kubectl get ciliumloadbalancerippools`
-- Gateway に `lbipam.cilium.io/ips` annotation が正しいか
-- Cilium LB IPAM が有効か
+- kube-vip-cloud-provider が Running か: `kubectl -n kube-vip-svc get pods`
+- ConfigMap `kube-vip-cloud-provider` に `range-global` が設定されているか: `kubectl -n kube-vip-svc get cm kube-vip-cloud-provider -o yaml`
+- LoadBalancer Service が存在するか: `kubectl get svc -A | grep LoadBalancer`
 
-### L2 Announcement で ARP 応答がない
+### kube-vip pod が wk-01/wk-02 で動いていない
 
-- worker に eth1 が存在するか: `talosctl get links --nodes <wk-ip>`
-- Cilium の datapath device に eth1 が含まれるか: `kubectl -n kube-system exec ds/cilium -- cilium-dbg config --all | grep Devices`
-- public VLAN が tagged frame として worker に入るため、Cilium Helm values の `bpf.vlanBypass` に VLAN 2033 が含まれるか確認する
-- `cilium-config` 変更後に Cilium pod が更新されているか: `kubectl -n kube-system get pods -l k8s-app=cilium -o wide`
-- CiliumL2AnnouncementPolicy の `nodeSelector` が wk-01/wk-02 を選んでいるか確認する
-- CiliumL2AnnouncementPolicy の `nodeSelector` と `interfaces` が正しいか: `kubectl describe ciliuml2announcementpolicy`
-- Lease leader が wk-01 または wk-02 か確認: `kubectl -n kube-system get lease | grep cilium-l2announce`
+- node label が付いているか: `kubectl get nodes --show-labels | grep public-gateway`
+- kube-vip HelmRelease の `nodeSelector` が正しいか
+- namespace に PSA privileged label があるか: `kubectl get ns kube-vip-svc --show-labels`
 
-### ARP 応答はあるが HTTP/HTTPS が timeout する
+### VIP が eth1 に付かない
 
-- `talosctl -n 10.240.30.4 pcap -i eth1 --duration 12s` で `163.220.236.73:80/443` 宛の SYN が worker に届くか確認する
-- SYN が届いているのに SYN-ACK が返らない場合は、`kubectl -n kube-system exec <cilium-pod-on-worker> -- cilium-dbg monitor --type drop --type trace` を確認する
-- `VLAN traffic disallowed by VLAN filter` が出る場合は、public VLAN ID が `bpf.vlanBypass` と一致していない
-- Envoy 自体の確認は worker 上の Cilium Pod から `127.0.0.1:<L7LB Proxy Port>` に HTTP request を送り、Gateway route/backend と node datapath を分けて切り分ける
+- kube-vip pod のログを確認: `kubectl -n kube-vip-svc logs ds/kube-vip`
+- `vip_interface: eth1` が正しく設定されているか
+- eth1 が実際に存在するか: `talosctl get links --nodes <wk-ip>`
+
+### Istio Gateway が Service を作らない
+
+- `PILOT_ENABLE_GATEWAY_API` と `PILOT_ENABLE_GATEWAY_API_DEPLOYMENT_CONTROLLER` が `true` か確認
+- istiod のログを確認: `kubectl -n istio-system logs deploy/istiod`

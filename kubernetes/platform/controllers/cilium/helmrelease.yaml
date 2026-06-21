@@ -41,10 +41,10 @@ spec:
     k8sServicePort: 7445
 
     gatewayAPI:
-      enabled: true
+      enabled: false
 
-    l2announcements:
-      enabled: true
+    envoy:
+      enabled: false
 
     k8sClientRateLimit:
       qps: 20

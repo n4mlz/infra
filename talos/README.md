@@ -84,6 +84,7 @@ talos/
   patches/
     cni.yaml              # CNI none + kube-proxy disabled
     addressless-public-vlan.yaml  # disable IPv6 SLAAC on public VLAN interface
+    public-gateway-node-label.yaml  # node label for kube-vip scheduling
   Taskfile.yml            # talos operations (apply-initial, apply, bootstrap, render)
 ```
 
@@ -91,4 +92,4 @@ talos/
 
 wk-01 と wk-02 は public Gateway トラフィックを処理するため、以下が設定されている：
 - `eth1`: public VLAN 用 NIC（IP アドレスなし、DHCP 無効）
-- Cilium L2 Announcement は `nodeSelector` で wk-01/wk-02 を選び、`interfaces: ^eth1$` で広告 interface を限定する
+- kube-vip が `infra.n4mlz.dev/public-gateway=true` label の node で eth1 に VIP を付与し ARP で広報する

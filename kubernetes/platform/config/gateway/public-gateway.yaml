@@ -1,5 +1,5 @@
 # This Gateway is the shared public HTTPS entrypoint.
-# It explicitly requests 163.220.236.73 from Cilium LB IPAM.
+# LoadBalancer IP is auto-assigned by kube-vip-cloud-provider.
 
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
@@ -9,10 +9,7 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production
 spec:
-  gatewayClassName: cilium
-  infrastructure:
-    annotations:
-      lbipam.cilium.io/ips: "163.220.236.73"
+  gatewayClassName: istio
   listeners:
     - name: http
       hostname: "*.n4mlz.dev"
