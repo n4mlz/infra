@@ -65,7 +65,7 @@ external client
 - kube-vip-cloud-provider: `range-global: 163.220.236.73-76` から `Service type=LoadBalancer` に IP を自動割当
 - kube-vip: leader node の eth1 に VIP を実際に付与し、ARP で広報する。`svc_election=true` により Service ごとに leader election
 - Istio Gateway: Gateway API を解釈し、自動生成された Envoy Deployment + `type: LoadBalancer` Service が L7 ルーティングを行う。Cilium の TPROXY/L7LB 経路に依存しない
-- Cilium CNI: `devices: eth+` で kube-proxy replacement (SNAT)。L4 Service datapath のみ担当
+- Cilium CNI: `devices: eth+` で kube-proxy replacement (DSR/Geneve)。L4 Service datapath のみ担当。戻り経路の非対称 routing を回避
 - Cilium VLAN bypass: public VLAN 2033 の tagged frame を Cilium BPF datapath で許可する
 - Cilium pod rollout: HelmRelease の `rollOutCiliumPods: true` により、`cilium-config` 変更時に agent pod を自動更新する
 - Gateway: `platform` namespace の `public-gateway`。IP は kube-vip-cloud-provider が自動割当。gatewayClassName: `istio`
