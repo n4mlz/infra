@@ -2,8 +2,8 @@
 
 ## Goal
 
-Istio Gateway API による外部 HTTPS 入口を完成させる。
 kube-vip が LB VIP を eth1 に付与し、Istio Gateway が L7 ルーティングを行う。
+Cilium DSR/Geneve が戻り経路の非対称 routing を回避する。
 Gateway、HTTPRoute、cert-manager TLS、external-dns DNS を GitOps 管理下に置く。
 
 ## Prerequisites
@@ -110,7 +110,7 @@ curl -vk https://smoke-test.n4mlz.dev/
 ```text
 controllers:
   gateway-api-crds/       # Gateway API CRD v1.5.1 (vendor, Istio 互換)
-  cilium/                 # CNI + kubeProxyReplacement (gatewayAPI disabled)
+  cilium/                 # CNI + kubeProxyReplacement (DSR/Geneve, gatewayAPI disabled)
   kube-vip/               # kube-vip DaemonSet (VIP → eth1) + kube-vip-cloud-provider (IPAM)
   istio/                  # Istio base + istiod (Gateway API automated deployment)
   external-dns/           # +gateway-httproute source

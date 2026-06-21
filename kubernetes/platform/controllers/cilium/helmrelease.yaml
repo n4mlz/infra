@@ -46,6 +46,12 @@ spec:
     envoy:
       enabled: false
 
+    loadBalancer:
+      mode: dsr
+      dsrDispatch: geneve
+
+    tunnelProtocol: geneve
+
     k8sClientRateLimit:
       qps: 20
       burst: 40
