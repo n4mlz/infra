@@ -1,7 +1,0 @@
-# This file defines Cilium LoadBalancer IP allocation and L2 announcement policy.
-
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-resources:
-  - cilium-lb-ipam.yaml
-  - cilium-l2-announcement.yaml

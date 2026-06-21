@@ -1,4 +1,4 @@
-# This file defines baseline namespaces used by platform and application workloads.
+# This file defines baseline namespaces used by platform controllers.
 
 apiVersion: v1
 kind: Namespace
@@ -8,9 +8,15 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: apps
+  name: kube-vip-svc
+  labels:
+    # kube-vip runs with hostNetwork and NET_ADMIN/NET_RAW capabilities
+    # to assign VIPs to physical interfaces and send ARP.
+    # https://kube-vip.io/docs/installation/
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/enforce-version: latest
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: smoke-test
+  name: istio-system

@@ -7,6 +7,8 @@ resources:
   - sources.yaml
   - gateway-api-crds
   - cilium
+  - kube-vip
+  - istio
   - onepassword-operator
   - cert-manager
   - external-dns

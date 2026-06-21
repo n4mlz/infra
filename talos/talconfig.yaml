@@ -69,6 +69,7 @@ nodes:
       - 8.8.8.8
     patches:
       - "@./patches/addressless-public-vlan.yaml"
+      - "@./patches/public-gateway-node-label.yaml"
     networkInterfaces:
       - interface: eth0
         addresses:
@@ -88,6 +89,7 @@ nodes:
       - 8.8.8.8
     patches:
       - "@./patches/addressless-public-vlan.yaml"
+      - "@./patches/public-gateway-node-label.yaml"
     networkInterfaces:
       - interface: eth0
         addresses:

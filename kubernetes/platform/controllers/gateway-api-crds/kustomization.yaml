@@ -1,4 +1,4 @@
-# This file installs pinned Gateway API CRDs required by Cilium Gateway API.
+# This file installs pinned Gateway API CRDs required by Istio Gateway API.
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
