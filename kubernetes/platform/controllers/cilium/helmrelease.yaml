@@ -34,6 +34,7 @@ spec:
     devices: eth+
 
     bpf:
+      hostLegacyRouting: false
       vlanBypass:
         - 2033
 
