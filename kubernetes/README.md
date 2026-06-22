@@ -23,9 +23,11 @@ flux/
 platform/
   controllers/
     namespaces.yaml         # platform, apps, smoke-test
-    sources.yaml            # HelmRepository ×4
-    gateway-api-crds/       # Gateway API CRD v1.4.1 (vendor, Cilium 1.19 互換)
-    cilium/                 # Cilium HelmRelease + Gateway API + L2 Announcement
+    sources.yaml            # HelmRepository
+    gateway-api-crds/       # Gateway API CRD v1.5.1
+    cilium/                 # Cilium HelmRelease + kube-proxy replacement
+    kube-vip/               # Service VIP assignment and ARP advertisement
+    public-egress-routing/  # Service VIP reply policy route
     onepassword-operator/   # 1Password Operator + SOPS token
       secrets/              # SOPS 暗号化 Secret manifest
     cert-manager/           # cert-manager HelmRelease
@@ -33,7 +35,6 @@ platform/
   config/
     onepassword-items/      # 1Password → Kubernetes Secret
     clusterissuers/         # cert-manager ClusterIssuer
-    loadbalancer/           # Cilium LB IPAM + L2 Announcement
     gateway/                # shared public Gateway
 
 apps/

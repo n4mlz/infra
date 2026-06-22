@@ -92,4 +92,5 @@ talos/
 
 wk-01 と wk-02 は public Gateway トラフィックを処理するため、以下が設定されている：
 - `eth1`: public VLAN 用 NIC（IP アドレスなし、DHCP 無効）
-- kube-vip が `infra.n4mlz.dev/public-gateway=true` label の node で eth1 に VIP を付与し ARP で広報する
+- kube-vip が `infra.n4mlz.dev/public-gateway=true` label の node で eth1 に Service VIP を付与し ARP で広報する
+- public VIP からの reply は `public-egress-routing` DaemonSet が source-based policy route で eth1 に戻す

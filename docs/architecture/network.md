@@ -35,17 +35,18 @@ Public VLAN (internet-facing)
 ## Gateway Worker
 
 wk-01, wk-02 は public VLAN に接続された 2 枚目の NIC（eth1）を持つ。
-eth1 には普段は IP アドレスは付与されないが、kube-vip が leader node の eth1 に LoadBalancer VIP を実際に付与し、ARP で広報する。
+eth1 には node 用の IP アドレスは付与しない。
+kube-vip が leader node の eth1 に LoadBalancer VIP を付与し、ARP で広報する。
 kube-vip は `infra.n4mlz.dev/public-gateway=true` label で wk-01/wk-02 だけに scheduling される。
 
 | ノード | eth0 (management) | eth1 (public VLAN) |
 |--------|-------------------|-------------------|
-| wk-01 | 10.240.30.4/16 | no IP, dhcp:false |
-| wk-02 | 10.240.30.5/16 | no IP, dhcp:false |
+| wk-01 | 10.240.30.4/16 | no node IP, dhcp:false |
+| wk-02 | 10.240.30.5/16 | no node IP, dhcp:false |
 
 control-plane（cp-01 ~ cp-03）は public VLAN に接続しない。
 
-eth1 は上流スイッチから VLAN 2033 の tagged frame を受ける。
+Proxmox は worker の 2 枚目の NIC を VLAN 2033 に接続する。
 Cilium の BPF datapath は VLAN tagged frame を既定では filter するため、`bpf.vlanBypass` で VLAN 2033 だけを許可する。
 `[0]` による全 VLAN 許可は使わず、public ingress に必要な VLAN だけを IaC で明示する。
 
@@ -62,15 +63,19 @@ external client
   -> HTTPRoute -> Service -> Pod
 ```
 
-- kube-vip-cloud-provider: `range-global: 163.220.236.73-76` から `Service type=LoadBalancer` に IP を自動割当
+- kube-vip-cloud-provider: `range-global: 163.220.236.73-163.220.236.76` から `Service type=LoadBalancer` に IP を自動割当
 - kube-vip: leader node の eth1 に VIP を実際に付与し、ARP で広報する。`svc_election=true` により Service ごとに leader election
 - Istio Gateway: Gateway API を解釈し、自動生成された Envoy Deployment + `type: LoadBalancer` Service が L7 ルーティングを行う。Cilium の TPROXY/L7LB 経路に依存しない
-- Cilium CNI: `devices: eth+` で kube-proxy replacement (DSR/Geneve)。L4 Service datapath のみ担当。戻り経路の非対称 routing を回避
+- Cilium CNI: `devices: eth+` で kube-proxy replacement。LoadBalancer は DSR/Geneve mode とし、L4 Service datapath を担当する
 - Cilium VLAN bypass: public VLAN 2033 の tagged frame を Cilium BPF datapath で許可する
 - Cilium pod rollout: HelmRelease の `rollOutCiliumPods: true` により、`cilium-config` 変更時に agent pod を自動更新する
 - Gateway: `platform` namespace の `public-gateway`。IP は kube-vip-cloud-provider が自動割当。gatewayClassName: `istio`
 - HTTPRoute: アプリ namespace 側で hostname/path を Service に紐づけ
 - kube-vip service security: `enable_service_security=true` で、Service port のみに traffic を制限し、host service の意図しない露出を防止
+- public-egress-routing: public Service VIP を source address とする reply だけを table `2033` に流し、eth1 から upstream router へ返す
+
+eth1 は node address を持たないため、Linux の main table だけでは `src=<Service VIP>` の reply も eth0 default route へ出る。
+Service VIP pool をすべて Service に使うため、node 用 public IP は確保せず、source-based policy routing を node-local DaemonSet で管理する。
 
 ## Tailscale Subnet Route
 
