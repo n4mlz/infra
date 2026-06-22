@@ -1,3 +1,6 @@
+# This file groups the Istio base chart (CRDs) and istiod (control plane) HelmReleases.
+# base (CRDs) must be applied before istiod.
+
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
