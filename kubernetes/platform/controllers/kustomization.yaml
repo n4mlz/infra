@@ -8,6 +8,7 @@ resources:
   - gateway-api-crds
   - cilium
   - kube-vip
+  - public-egress-routing
   - istio
   - onepassword-operator
   - cert-manager

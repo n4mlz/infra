@@ -3,7 +3,7 @@
 ## Goal
 
 kube-vip が LB VIP を eth1 に付与し、Istio Gateway が L7 ルーティングを行う。
-Cilium DSR/Geneve が戻り経路の非対称 routing を回避する。
+public Gateway worker は eth1 に node 用 public IP を持たず、public Service VIP からの reply だけを policy route で public VLAN へ返す。
 Gateway、HTTPRoute、cert-manager TLS、external-dns DNS を GitOps 管理下に置く。
 
 ## Prerequisites
@@ -47,6 +47,7 @@ task pull-age-key
 task talos:render
 NODE=wk-01 NODE_IP=10.240.30.4 task talos:apply
 NODE=wk-02 NODE_IP=10.240.30.5 task talos:apply
+kubectl get nodes --show-labels | grep public-gateway
 ```
 
 ### 4. Reconcile
@@ -110,8 +111,9 @@ curl -vk https://smoke-test.n4mlz.dev/
 ```text
 controllers:
   gateway-api-crds/       # Gateway API CRD v1.5.1 (vendor, Istio 互換)
-  cilium/                 # CNI + kubeProxyReplacement (DSR/Geneve, gatewayAPI disabled)
+  cilium/                 # CNI + kubeProxyReplacement (DSR/Geneve LoadBalancer, gatewayAPI disabled)
   kube-vip/               # kube-vip DaemonSet (VIP → eth1) + kube-vip-cloud-provider (IPAM)
+  public-egress-routing/  # Service VIP source traffic を eth1 に戻す policy route
   istio/                  # Istio base + istiod (Gateway API automated deployment)
   external-dns/           # +gateway-httproute source
 
@@ -125,6 +127,12 @@ config:
 ## kube-vip IP pool
 
 `163.220.236.73-163.220.236.76` を `kube-vip-cloud-provider` の `range-global` で管理。
+wk-01 / wk-02 の eth1 には node 用 public IP を割り当てない。
+
+## TODO
+
+- `public-egress-routing` DaemonSet に依存しない戻り経路設計を検証する
+- Proxmox 側で public NIC を untagged VLAN として渡し、Talos/Cilium から VLAN ID 2033 が見えない構成にできるか検証する
 
 ## トラブルシュート
 
@@ -156,3 +164,11 @@ config:
 
 - `PILOT_ENABLE_GATEWAY_API` と `PILOT_ENABLE_GATEWAY_API_DEPLOYMENT_CONTROLLER` が `true` か確認
 - istiod のログを確認: `kubectl -n istio-system logs deploy/istiod`
+
+### 外部から timeout するが cluster 内から VIP へ接続できる
+
+- `kubectl -n smoke-test run ... -- curl -vk --resolve smoke-test.n4mlz.dev:443:<EXTERNAL-IP> https://smoke-test.n4mlz.dev/` が成功する場合、Gateway/TLS/HTTPRoute/backend は正常
+- `talosctl -n <leader-worker-ip> pcap -i eth1 --duration 10s` で外部 SYN が eth1 に入っているか確認
+- `kubectl -n kube-system exec <cilium-pod> -- cilium-dbg monitor -t trace -v` で Cilium LoadBalancer の転送と reply を確認
+- `kubectl -n kube-system exec <leader-cilium-pod> -- ip route get 1.1.1.1 from <EXTERNAL-IP>` が eth1 を返すか確認する
+- public VIP を source address とする reply は worker の route に従う。`public-egress-routing` DaemonSet の rule/table `2033` が無い場合、eth0 へ出て timeout する

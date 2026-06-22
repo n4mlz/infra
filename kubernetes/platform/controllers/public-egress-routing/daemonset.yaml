@@ -1,0 +1,41 @@
+# This DaemonSet keeps source-based routes for public Service VIP replies.
+# It depends on kube-vip assigning Gateway Service VIPs from 163.220.236.73-76
+# to eth1 and on the public VLAN gateway being 163.220.237.254.
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: public-egress-routing
+  namespace: kube-vip-svc
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: public-egress-routing
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: public-egress-routing
+    spec:
+      hostNetwork: true
+      nodeSelector:
+        infra.n4mlz.dev/public-gateway: "true"
+      tolerations:
+        - operator: Exists
+      containers:
+        - name: route
+          image: quay.io/cilium/cilium:v1.19.4
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              while true; do
+                ip route replace default via 163.220.237.254 dev eth1 table 2033 onlink
+                for vip in 163.220.236.73 163.220.236.74 163.220.236.75 163.220.236.76; do
+                  ip rule show | grep -q "from ${vip} lookup 2033" || \
+                    ip rule add priority 2033 from "${vip}/32" table 2033
+                done
+                sleep 30
+              done

@@ -1,0 +1,6 @@
+# This kustomization installs node-local policy routing for public Service VIPs.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - daemonset.yaml
