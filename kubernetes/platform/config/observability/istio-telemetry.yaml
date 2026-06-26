@@ -1,0 +1,13 @@
+# This file enables Istio trace export to the OpenTelemetry Collector gateway.
+# Depends on: OTel Collector Gateway service (otel-gateway-collector.platform.svc.cluster.local:4317).
+
+apiVersion: telemetry.istio.io/v1
+kind: Telemetry
+metadata:
+  name: default-tracing
+  namespace: istio-system
+spec:
+  tracing:
+    - providers:
+        - name: otel
+      randomSamplingPercentage: 5

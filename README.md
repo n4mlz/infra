@@ -17,6 +17,7 @@
 | Ingress | Gateway API, Istio Gateway |
 | TLS / DNS | cert-manager, external-dns, Cloudflare |
 | Secret 管理 | 1Password Operator, SOPS age |
+| 監視 / 可観測性 | kube-prometheus-stack, Loki, Tempo, OpenTelemetry Collector |
 | 運用環境 | devcontainer, Taskfile |
 
 ## 全体像
@@ -55,6 +56,7 @@ Kubernetes の desired state は Flux が `kubernetes/` 配下から同期する
 ## ドキュメント
 
 - [Network Architecture](docs/architecture/network.md)
+- [Observability Architecture](docs/architecture/observability.md)
 - [Credential Handling](docs/security/credential-handling.md)
 - [Ops Devcontainer](docs/bootstrap/ops-devcontainer.md)
 - [Root of Trust](docs/bootstrap/root-of-trust.md)

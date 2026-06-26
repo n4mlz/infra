@@ -1,0 +1,30 @@
+# This HelmRelease installs the OpenTelemetry Operator.
+# Collector instances are defined separately as OpenTelemetryCollector custom resources.
+
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: opentelemetry-operator
+  namespace: platform
+spec:
+  interval: 10m
+  releaseName: opentelemetry-operator
+  chart:
+    spec:
+      chart: opentelemetry-operator
+      version: "0.117.0"
+      sourceRef:
+        kind: HelmRepository
+        name: open-telemetry
+        namespace: flux-system
+      interval: 24h
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    manager:
+      collectorImage:
+        repository: otel/opentelemetry-collector-contrib

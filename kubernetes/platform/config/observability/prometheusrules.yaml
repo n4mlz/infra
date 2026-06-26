@@ -1,0 +1,58 @@
+# This file defines baseline alert rules for the platform.
+# Depends on: kube-prometheus-stack (release label for rule selection).
+
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: platform-baseline-alerts
+  namespace: platform
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: platform.baseline
+      rules:
+        - alert: FluxReconciliationFailed
+          expr: gotk_reconcile_condition{type="Ready",status="False"} == 1
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Flux reconciliation is failing"
+            description: "Flux resource {{ $labels.name }} in {{ $labels.namespace }} is not Ready."
+
+        - alert: CertificateExpiresSoon
+          expr: certmanager_certificate_expiration_timestamp_seconds - time() < 7 * 24 * 60 * 60
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Certificate expires soon"
+            description: "Certificate {{ $labels.name }} in {{ $labels.namespace }} expires in less than 7 days."
+
+        - alert: PodCrashLooping
+          expr: increase(kube_pod_container_status_restarts_total[15m]) > 3
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Pod is restarting repeatedly"
+            description: "Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }} restarted repeatedly."
+
+        - alert: NodeNotReady
+          expr: kube_node_status_condition{condition="Ready",status="true"} == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Node is not Ready"
+            description: "Node {{ $labels.node }} has been NotReady for more than 5 minutes."
+
+        - alert: OpenTelemetryCollectorDown
+          expr: up{job=~".*otel.*"} == 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "OpenTelemetry Collector target is down"
+            description: "Collector target {{ $labels.instance }} is down."
