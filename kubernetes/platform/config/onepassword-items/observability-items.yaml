@@ -1,0 +1,34 @@
+# This file declares 1Password items for the observability stack.
+# Items must exist in 1Password before the operator can materialize them.
+
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: grafana-admin-credentials
+  namespace: platform
+spec:
+  itemPath: "vaults/Infra/items/Grafana admin credentials"
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: alertmanager-discord-webhook
+  namespace: platform
+spec:
+  itemPath: "vaults/Infra/items/Alertmanager Discord webhook"
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: minio-root-credentials
+  namespace: platform
+spec:
+  itemPath: "vaults/Infra/items/MinIO root credentials"
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: observability-object-storage-credentials
+  namespace: platform
+spec:
+  itemPath: "vaults/Infra/items/Observability object storage credentials"

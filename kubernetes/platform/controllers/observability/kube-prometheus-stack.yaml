@@ -1,0 +1,99 @@
+# This HelmRelease installs the metrics, dashboard, and alerting baseline.
+# Platform metrics are scraped natively by Prometheus instead of being forced through OpenTelemetry.
+# Depends on: grafana-admin-credentials and alertmanager-discord-webhook secrets.
+
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+  namespace: platform
+spec:
+  interval: 10m
+  releaseName: kube-prometheus-stack
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      version: "87.2.1"
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: flux-system
+      interval: 24h
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    fullnameOverride: kube-prometheus-stack
+
+    crds:
+      enabled: true
+
+    grafana:
+      admin:
+        existingSecret: grafana-admin-credentials
+        userKey: admin-user
+        passwordKey: admin-password
+
+      defaultDashboardsTimezone: Asia/Tokyo
+
+      sidecar:
+        dashboards:
+          enabled: true
+          label: grafana_dashboard
+          labelValue: "1"
+          searchNamespace: ALL
+        datasources:
+          enabled: true
+          label: grafana_datasource
+          labelValue: "1"
+          searchNamespace: ALL
+
+    alertmanager:
+      alertmanagerSpec:
+        secrets:
+          - alertmanager-discord-webhook
+
+      config:
+        global:
+          resolve_timeout: 5m
+        route:
+          receiver: discord
+          group_by:
+            - namespace
+            - alertname
+          group_wait: 30s
+          group_interval: 5m
+          repeat_interval: 6h
+        receivers:
+          - name: discord
+            discord_configs:
+              - webhook_url_file: /etc/alertmanager/secrets/alertmanager-discord-webhook/webhook-url
+                send_resolved: true
+
+    prometheus:
+      prometheusSpec:
+        retention: 24h
+        retentionSize: 8GB
+        scrapeInterval: 30s
+        evaluationInterval: 30s
+
+        serviceMonitorSelectorNilUsesHelmValues: false
+        podMonitorSelectorNilUsesHelmValues: false
+        ruleSelectorNilUsesHelmValues: false
+
+        serviceMonitorNamespaceSelector: {}
+        podMonitorNamespaceSelector: {}
+        ruleNamespaceSelector: {}
+
+    kubeProxy:
+      enabled: false
+
+    kube-state-metrics:
+      metricLabelsAllowlist:
+        - pods=[*]
+        - deployments=[*]
+        - statefulsets=[*]
+        - persistentvolumeclaims=[*]
