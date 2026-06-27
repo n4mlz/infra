@@ -18,13 +18,6 @@ spec:
         namespace: flux-system
       interval: 24h
   values:
-    meshConfig:
-      extensionProviders:
-        - name: otel
-          opentelemetry:
-            service: otel-gateway-collector.platform.svc.cluster.local
-            port: 4317
-
     pilot:
       env:
         PILOT_ENABLE_GATEWAY_API: "true"
