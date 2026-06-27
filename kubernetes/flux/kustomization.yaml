@@ -7,7 +7,3 @@ resources:
   - platform-controllers.yaml
   - platform-config.yaml
   - apps.yaml
-
-  - platform-object-storage.yaml
-  - platform-observability-controllers.yaml
-  - platform-observability-config.yaml
