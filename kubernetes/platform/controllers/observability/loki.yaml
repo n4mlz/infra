@@ -68,13 +68,6 @@ spec:
         - secretRef:
             name: observability-object-storage-credentials
 
-    write:
-      replicas: 0
-    read:
-      replicas: 0
-    backend:
-      replicas: 0
-
     gateway:
       enabled: false
 
