@@ -16,7 +16,7 @@
 | LoadBalancer VIP | kube-vip, kube-vip-cloud-provider |
 | Ingress | Gateway API, Istio Gateway |
 | TLS / DNS | cert-manager, external-dns, Cloudflare |
-| Secret 管理 | 1Password Operator, SOPS age |
+| Secret 管理 | External Secrets Operator, 1Password, SOPS age |
 | 運用環境 | devcontainer, Taskfile |
 
 ## 全体像

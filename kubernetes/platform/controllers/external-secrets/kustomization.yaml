@@ -1,7 +1,6 @@
-# This file groups the 1Password Operator resources.
+# This file groups the External Secrets Operator controller resources.
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - secrets/service-account-token.sops.yaml
   - helmrelease.yaml

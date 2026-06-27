@@ -22,18 +22,17 @@ flux/
 
 platform/
   controllers/
-    namespaces.yaml         # platform, apps, smoke-test
+    namespaces.yaml         # platform controller namespaces
     sources.yaml            # HelmRepository
     gateway-api-crds/       # Gateway API CRD v1.5.1
     cilium/                 # Cilium HelmRelease + kube-proxy replacement
     kube-vip/               # Service VIP assignment and ARP advertisement
     public-egress-routing/  # Service VIP reply policy route
-    onepassword-operator/   # 1Password Operator + SOPS token
-      secrets/              # SOPS 暗号化 Secret manifest
+    external-secrets/       # External Secrets Operator
     cert-manager/           # cert-manager HelmRelease
     external-dns/           # external-dns HelmRelease
   config/
-    onepassword-items/      # 1Password → Kubernetes Secret
+    external-secrets/       # 1Password → Kubernetes Secret
     clusterissuers/         # cert-manager ClusterIssuer
     gateway/                # shared public Gateway
 
@@ -51,8 +50,9 @@ apps/
 ## Secret 管理
 
 - bootstrap secret（sops-age）は Taskfile 経由で手動適用
-- Kubernetes Secret の SOPS 暗号化ファイルは `secrets/` ディレクトリに置く
-- 通常の運用 secret は 1Password を source of truth とし、1Password Operator が Kubernetes Secret に変換する
+- Kubernetes Secret の SOPS 暗号化ファイルは `.sops.yaml` の `kubernetes/.+\.sops\.ya?ml` rule で `data` / `stringData` のみ暗号化する
+- 通常の運用 secret は 1Password を source of truth とし、External Secrets Operator が Kubernetes Secret に変換する
+- SOPS で管理する Kubernetes Secret は、External Secrets Operator が 1Password を読むための bootstrap token に限定する
 - 詳細は [docs/security/credential-handling.md](../docs/security/credential-handling.md)
 
 ## Reconcile

@@ -20,3 +20,22 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: istio-system
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: external-secrets
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cert-manager
+  labels:
+    secrets.n4mlz.dev/onepassword-infra: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: external-dns
+  labels:
+    secrets.n4mlz.dev/onepassword-infra: "true"
