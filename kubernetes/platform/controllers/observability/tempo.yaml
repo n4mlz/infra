@@ -30,8 +30,6 @@ spec:
       extraEnvFrom:
         - secretRef:
             name: observability-object-storage-credentials
-      extraArgs:
-        - -config.expand-env=true
 
     tempo:
       structuredConfig:
