@@ -9,9 +9,14 @@ spec:
   interval: 10m
   path: ./kubernetes/platform/config
   prune: true
+  wait: true
   timeout: 10m
   dependsOn:
     - name: platform-controllers
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
   sourceRef:
     kind: GitRepository
     name: flux-system

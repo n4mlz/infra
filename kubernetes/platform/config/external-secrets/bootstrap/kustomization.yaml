@@ -1,0 +1,6 @@
+# This file contains the bootstrap Secret required by External Secrets Operator to authenticate to 1Password.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - op-service-account-token.sops.yaml

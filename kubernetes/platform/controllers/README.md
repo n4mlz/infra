@@ -10,7 +10,7 @@
 | cilium | CNI（ネットワーク） + kube-proxy replacement |
 | kube-vip | LoadBalancer VIP の割当と ARP 広報 |
 | public-egress-routing | public VIP の reply を public VLAN へ戻す policy route |
-| onepassword-operator | 1Password → Kubernetes Secret 変換 |
+| external-secrets | 外部 Secret provider（1Password）と Kubernetes Secret の同期 |
 | cert-manager | TLS 証明書の自動発行・更新 |
 | external-dns | Cloudflare DNS record の自動管理 |
 

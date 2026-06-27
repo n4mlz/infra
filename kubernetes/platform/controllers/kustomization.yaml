@@ -10,6 +10,6 @@ resources:
   - kube-vip
   - public-egress-routing
   - istio
-  - onepassword-operator
+  - external-secrets
   - cert-manager
   - external-dns

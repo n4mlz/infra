@@ -1,5 +1,5 @@
 # This HelmRelease installs external-dns for Cloudflare-managed zones.
-# The Cloudflare token is materialized from 1Password by the operator.
+# The Cloudflare token is materialized from 1Password by External Secrets Operator.
 
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -9,6 +9,7 @@ metadata:
 spec:
   interval: 10m
   releaseName: external-dns
+  targetNamespace: external-dns
   chart:
     spec:
       chart: external-dns

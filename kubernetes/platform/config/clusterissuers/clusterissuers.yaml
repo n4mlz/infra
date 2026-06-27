@@ -1,5 +1,5 @@
 # This file defines ACME ClusterIssuers using Cloudflare DNS01 validation.
-# The Cloudflare token Secret is materialized from 1Password by the operator.
+# The Cloudflare token Secret is materialized from 1Password by External Secrets Operator.
 
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
