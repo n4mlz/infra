@@ -22,11 +22,9 @@ spec:
   install:
     remediation:
       retries: 3
-    timeout: 15m
   upgrade:
     remediation:
       retries: 3
-    timeout: 15m
   values:
     fullnameOverride: kube-prometheus-stack
 
