@@ -10,8 +10,6 @@
 | cilium | CNI（ネットワーク） + kube-proxy replacement |
 | kube-vip | LoadBalancer VIP の割当と ARP 広報 |
 | public-egress-routing | public VIP の reply を public VLAN へ戻す policy route |
-| object-storage | Loki / Tempo が使うクラスタ内部 S3 互換ストレージ |
-| observability | Prometheus / Grafana / Loki / Tempo / OpenTelemetry Operator |
 | onepassword-operator | 1Password → Kubernetes Secret 変換 |
 | cert-manager | TLS 証明書の自動発行・更新 |
 | external-dns | Cloudflare DNS record の自動管理 |
