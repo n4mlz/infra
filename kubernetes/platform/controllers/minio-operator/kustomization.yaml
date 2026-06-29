@@ -1,0 +1,7 @@
+# This file groups MinIO-compatible object storage operator resources.
+# The operator manifest is vendored and pinned.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - artifacts/operator.yaml

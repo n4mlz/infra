@@ -1,0 +1,20 @@
+# This Taskfile manages CSI VolumeSnapshot CRD and snapshot-controller lifecycle.
+# Manifests are vendored from upstream because there is no official Helm chart.
+
+version: "3"
+
+vars:
+  SNAPSHOTTER_VERSION: v8.3.0
+  BASE_URL: https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/{{.SNAPSHOTTER_VERSION}}
+  ARTIFACTS_DIR: artifacts
+
+tasks:
+  update:
+    desc: "Update vendored CSI snapshot CRDs and controller from upstream."
+    cmds:
+      - mkdir -p "{{.ARTIFACTS_DIR}}"
+      - curl -fsSLO --output-dir "{{.ARTIFACTS_DIR}}" "{{.BASE_URL}}/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml"
+      - curl -fsSLO --output-dir "{{.ARTIFACTS_DIR}}" "{{.BASE_URL}}/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml"
+      - curl -fsSLO --output-dir "{{.ARTIFACTS_DIR}}" "{{.BASE_URL}}/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml"
+      - curl -fsSLO --output-dir "{{.ARTIFACTS_DIR}}" "{{.BASE_URL}}/deploy/kubernetes/snapshot-controller/rbac-snapshot-controller.yaml"
+      - curl -fsSLO --output-dir "{{.ARTIFACTS_DIR}}" "{{.BASE_URL}}/deploy/kubernetes/snapshot-controller/setup-snapshot-controller.yaml"

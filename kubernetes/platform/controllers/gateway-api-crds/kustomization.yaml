@@ -3,9 +3,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - crds/gateway.networking.k8s.io_gatewayclasses.yaml
-  - crds/gateway.networking.k8s.io_gateways.yaml
-  - crds/gateway.networking.k8s.io_httproutes.yaml
-  - crds/gateway.networking.k8s.io_referencegrants.yaml
-  - crds/gateway.networking.k8s.io_grpcroutes.yaml
-  - crds/gateway.networking.k8s.io_tlsroutes.yaml
+  - artifacts/gateway.networking.k8s.io_gatewayclasses.yaml
+  - artifacts/gateway.networking.k8s.io_gateways.yaml
+  - artifacts/gateway.networking.k8s.io_httproutes.yaml
+  - artifacts/gateway.networking.k8s.io_referencegrants.yaml
+  - artifacts/gateway.networking.k8s.io_grpcroutes.yaml
+  - artifacts/gateway.networking.k8s.io_tlsroutes.yaml

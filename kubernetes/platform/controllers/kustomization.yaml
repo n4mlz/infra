@@ -13,3 +13,7 @@ resources:
   - external-secrets
   - cert-manager
   - external-dns
+  - snapshot-controller
+  - longhorn
+  - directpv
+  - minio-operator

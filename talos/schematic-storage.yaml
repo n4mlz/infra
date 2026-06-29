@@ -1,0 +1,9 @@
+# This file defines the Talos system extensions required for storage.
+# Used to generate a custom schematic for Longhorn (iscsi-tools) and disk management (util-linux-tools).
+# Submit to https://factory.talos.dev/schematics or use talosctl upgrade --image with the resulting installer.
+
+customization:
+  systemExtensions:
+    officialExtensions:
+      - siderolabs/iscsi-tools
+      - siderolabs/util-linux-tools

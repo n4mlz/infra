@@ -16,6 +16,15 @@ includes:
   gateway-api-crds:
     taskfile: ./kubernetes/platform/controllers/gateway-api-crds/Taskfile.yml
     dir: ./kubernetes/platform/controllers/gateway-api-crds
+  snapshot-controller:
+    taskfile: ./kubernetes/platform/controllers/snapshot-controller/Taskfile.yml
+    dir: ./kubernetes/platform/controllers/snapshot-controller
+  directpv:
+    taskfile: ./kubernetes/platform/controllers/directpv/Taskfile.yml
+    dir: ./kubernetes/platform/controllers/directpv
+  minio-operator:
+    taskfile: ./kubernetes/platform/controllers/minio-operator/Taskfile.yml
+    dir: ./kubernetes/platform/controllers/minio-operator
 
 tasks:
   default:

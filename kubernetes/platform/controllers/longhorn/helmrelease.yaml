@@ -1,0 +1,36 @@
+# This HelmRelease installs Longhorn for general-purpose replicated block storage.
+# Longhorn uses the dedicated persistent volume disk mounted by Talos.
+
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: longhorn
+  namespace: longhorn
+spec:
+  interval: 10m
+  releaseName: longhorn
+  chart:
+    spec:
+      chart: longhorn
+      version: "1.12.0"
+      sourceRef:
+        kind: HelmRepository
+        name: longhorn
+        namespace: flux-system
+      interval: 24h
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    persistence:
+      defaultClass: false
+      reclaimPolicy: Retain
+
+    defaultSettings:
+      defaultDataPath: /var/mnt/persistent-volume
+      storageMinimalAvailablePercentage: 20
+      replicaAutoBalance: best-effort
+      allowRecurringJobWhileVolumeDetached: true
