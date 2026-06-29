@@ -1,0 +1,15 @@
+# This Taskfile manages MinIO Operator lifecycle.
+# The manifest is generated via kubectl kustomize from upstream.
+
+version: "3"
+
+vars:
+  MINIO_OPERATOR_VERSION: v7.1.1
+  ARTIFACTS_DIR: artifacts
+
+tasks:
+  update:
+    desc: "Update vendored MinIO Operator manifest."
+    cmds:
+      - mkdir -p "{{.ARTIFACTS_DIR}}"
+      - 'kubectl kustomize "https://github.com/minio/operator?ref={{.MINIO_OPERATOR_VERSION}}" > {{.ARTIFACTS_DIR}}/operator.yaml'

@@ -6,3 +6,5 @@ resources:
   - external-secrets
   - clusterissuers
   - gateway
+  - storage
+  - minio

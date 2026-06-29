@@ -14,7 +14,8 @@ Tailscale Tailnet (100.64.0.0/10)
                      ├── cp-03: 10.240.30.3
                      ├── wk-01: 10.240.30.4
                      ├── wk-02: 10.240.30.5
-                     └── (reserved: .6 ~ .8)
+                     ├── wk-03: 10.240.30.6
+                     └── wk-04: 10.240.30.7
 
 Public VLAN (internet-facing)
   └── VLAN 2033 / 163.220.236.0/23
@@ -34,15 +35,17 @@ Public VLAN (internet-facing)
 
 ## Gateway Worker
 
-wk-01, wk-02 は public VLAN に接続された 2 枚目の NIC（eth1）を持つ。
+wk-01 から wk-04 は public VLAN に接続された 2 枚目の NIC（eth1）を持つ。
 eth1 には node 用の IP アドレスは付与しない。
 kube-vip が leader node の eth1 に LoadBalancer VIP を付与し、ARP で広報する。
-kube-vip は `infra.n4mlz.dev/public-gateway=true` label で wk-01/wk-02 だけに scheduling される。
+kube-vip は `infra.n4mlz.dev/public-gateway=true` label で public Gateway worker だけに scheduling される。
 
 | ノード | eth0 (management) | eth1 (public VLAN) |
 |--------|-------------------|-------------------|
 | wk-01 | 10.240.30.4/16 | no node IP, dhcp:false |
 | wk-02 | 10.240.30.5/16 | no node IP, dhcp:false |
+| wk-03 | 10.240.30.6/16 | no node IP, dhcp:false |
+| wk-04 | 10.240.30.7/16 | no node IP, dhcp:false |
 
 control-plane（cp-01 ~ cp-03）は public VLAN に接続しない。
 

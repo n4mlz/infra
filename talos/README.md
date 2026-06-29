@@ -78,19 +78,26 @@ task talos:status
 
 ```
 talos/
-  talconfig.yaml          # cluster topology definition (wk-01/02 have eth1)
+  talconfig.yaml          # cluster topology definition
+  schematic-storage.yaml  # Talos Factory schematic for storage extensions
   talsecret.sops.yaml     # encrypted Talos secrets
   cilium-values.yaml      # Cilium Helm values (initial bootstrap only)
   patches/
     cni.yaml              # CNI none + kube-proxy disabled
     addressless-public-vlan.yaml  # disable IPv6 SLAAC on public VLAN interface
     public-gateway-node-label.yaml  # node label for kube-vip scheduling
+    storage-node-label.yaml  # node label for storage workloads
   Taskfile.yml            # talos operations (apply-initial, apply, bootstrap, render)
 ```
 
 ## Gateway Workers
 
-wk-01 と wk-02 は public Gateway トラフィックを処理するため、以下が設定されている：
+wk-01 から wk-04 は public Gateway トラフィックを処理するため、以下が設定されている：
 - `eth1`: public VLAN 用 NIC（IP アドレスなし、DHCP 無効）
 - kube-vip が `infra.n4mlz.dev/public-gateway=true` label の node で eth1 に Service VIP を付与し ARP で広報する
 - public VIP からの reply は `public-egress-routing` DaemonSet が source-based policy route で eth1 に戻す
+
+## Storage Workers
+
+wk-01 から wk-04 は storage workload を処理するため、`node-role.n4mlz.dev/storage=true` label を Talos patch で付与する。
+Longhorn 用 Talos extension は `schematic-storage.yaml` で管理し、生成された installer image で worker を upgrade する。

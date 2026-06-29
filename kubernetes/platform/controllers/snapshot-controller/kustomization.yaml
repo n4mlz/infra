@@ -1,0 +1,14 @@
+# This file installs CSI VolumeSnapshot CRDs and snapshot-controller.
+# CRDs and controller resources are vendored in artifacts/.
+# Namespace is set via kustomize namespace transformer, which automatically
+# updates metadata.namespace and RoleBinding subjects.namespace.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: snapshot-controller
+resources:
+  - artifacts/volumesnapshotclasses.yaml
+  - artifacts/volumesnapshotcontents.yaml
+  - artifacts/volumesnapshots.yaml
+  - artifacts/rbac-snapshot-controller.yaml
+  - artifacts/setup-snapshot-controller.yaml

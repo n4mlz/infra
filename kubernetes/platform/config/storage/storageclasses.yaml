@@ -1,0 +1,28 @@
+# This file defines StorageClasses used by platform and application workloads.
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-rwo
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  numberOfReplicas: "3"
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: directpv-object-storage
+provisioner: directpv-min-io
+allowVolumeExpansion: true
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  csi.storage.k8s.io/fstype: xfs
+allowedTopologies:
+  - matchLabelExpressions:
+      - key: directpv.min.io/identity
+        values:
+          - directpv-min-io

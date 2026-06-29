@@ -59,3 +59,21 @@ variable "public_vlan_id" {
   default     = null
   description = "VLAN ID for the optional public NIC on gateway workers. Only set for gateway workers."
 }
+
+variable "persistent_volume_disk_gb" {
+  type        = number
+  default     = 0
+  description = "Size in GiB for a dedicated persistent volume disk (scsi1). Set to 0 to skip."
+}
+
+variable "object_storage_disk_gb" {
+  type        = number
+  default     = 0
+  description = "Size in GiB for a dedicated object storage disk (scsi2). Set to 0 to skip."
+}
+
+variable "bootstrap" {
+  type        = bool
+  default     = false
+  description = "Attach Talos ISO and set cdrom boot order for initial installation."
+}

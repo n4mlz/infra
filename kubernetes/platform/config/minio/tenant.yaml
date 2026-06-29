@@ -1,0 +1,38 @@
+# This Tenant defines in-cluster S3-compatible object storage.
+# Data volumes use DirectPV, not Longhorn.
+
+apiVersion: minio.min.io/v2
+kind: Tenant
+metadata:
+  name: minio
+  namespace: minio
+spec:
+  image: minio/minio:RELEASE.2025-10-15T17-29-55Z
+
+  requestAutoCert: true
+
+  configuration:
+    name: minio-root-credentials
+
+  pools:
+    - name: pool-0
+      servers: 4
+      volumesPerServer: 1
+      volumeClaimTemplate:
+        metadata:
+          name: data
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          storageClassName: directpv-object-storage
+          resources:
+            requests:
+              storage: 256Gi
+      nodeSelector:
+        node-role.n4mlz.dev/storage: "true"
+      resources:
+        requests:
+          cpu: "500m"
+          memory: "1Gi"
+        limits:
+          memory: "2Gi"

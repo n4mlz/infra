@@ -39,3 +39,31 @@ metadata:
   name: external-dns
   labels:
     secrets.n4mlz.dev/onepassword-infra: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: snapshot-controller
+  labels:
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/audit: baseline
+    pod-security.kubernetes.io/warn: baseline
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: longhorn
+  labels:
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: minio
+  labels:
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/audit: baseline
+    pod-security.kubernetes.io/warn: baseline
+    secrets.n4mlz.dev/onepassword-infra: "true"

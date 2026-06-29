@@ -1,0 +1,7 @@
+# This file defines storage classes and snapshot classes.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - storageclasses.yaml
+  - volumesnapshotclasses.yaml

@@ -1,6 +1,7 @@
 # Reusable module for creating a Talos VM on Proxmox.
-# Default state: disk boot only, empty CD-ROM.
-# Set iso_file_id and boot_order for initial ISO installation.
+# scsi0: system disk. scsi1: persistent volume disk. scsi2: object storage disk.
+# Set bootstrap=true for initial ISO installation (attaches ISO, enables cdrom boot, does not start).
+# bootstrap=false (default): disk boot only, empty CD-ROM, starts automatically.
 
 resource "proxmox_virtual_environment_vm" "this" {
   name        = var.vm_name
@@ -11,8 +12,8 @@ resource "proxmox_virtual_environment_vm" "this" {
 
   machine = "q35"
 
-  started    = var.started
-  boot_order = var.boot_order
+  started    = var.bootstrap ? false : var.started
+  boot_order = var.bootstrap ? ["ide2", "scsi0"] : var.boot_order
 
   cpu {
     cores = var.cores
@@ -30,8 +31,32 @@ resource "proxmox_virtual_environment_vm" "this" {
     file_format  = "raw"
   }
 
+  dynamic "disk" {
+    for_each = var.persistent_volume_disk_gb > 0 ? { scsi1 = var.persistent_volume_disk_gb } : {}
+    content {
+      datastore_id = var.datastore_id
+      interface    = disk.key
+      size         = disk.value
+      file_format  = "raw"
+      discard      = "on"
+      serial       = "${var.vm_name}-pv-0"
+    }
+  }
+
+  dynamic "disk" {
+    for_each = var.object_storage_disk_gb > 0 ? { scsi2 = var.object_storage_disk_gb } : {}
+    content {
+      datastore_id = var.datastore_id
+      interface    = disk.key
+      size         = disk.value
+      file_format  = "raw"
+      discard      = "on"
+      serial       = "${var.vm_name}-object-0"
+    }
+  }
+
   cdrom {
-    file_id   = var.iso_file_id
+    file_id   = var.bootstrap ? var.iso_file_id : "none"
     interface = "ide2"
   }
 

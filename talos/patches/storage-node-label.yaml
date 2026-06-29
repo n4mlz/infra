@@ -1,0 +1,5 @@
+# Applies a node label so storage workloads schedule only on storage-capable workers.
+
+machine:
+  nodeLabels:
+    node-role.n4mlz.dev/storage: "true"

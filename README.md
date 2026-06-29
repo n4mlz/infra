@@ -16,6 +16,7 @@
 | LoadBalancer VIP | kube-vip, kube-vip-cloud-provider |
 | Ingress | Gateway API, Istio Gateway |
 | TLS / DNS | cert-manager, external-dns, Cloudflare |
+| Storage | Longhorn, DirectPV, MinIO |
 | Secret 管理 | External Secrets Operator, 1Password, SOPS age |
 | 運用環境 | devcontainer, Taskfile |
 
@@ -32,6 +33,7 @@ worklogs/       作業ログ
 クラスタは Proxmox 上の Talos VM で構成する。
 Kubernetes の desired state は Flux が `kubernetes/` 配下から同期する。
 外部 HTTPS は kube-vip が public VLAN 上に Service VIP を広告し、Istio Gateway が Gateway API の Route を処理する。
+永続データは Longhorn と DirectPV/MinIO に分離し、汎用 RWO PVC と object storage の責務を分ける。
 
 ## 主要ディレクトリ
 
@@ -55,6 +57,7 @@ Kubernetes の desired state は Flux が `kubernetes/` 配下から同期する
 ## ドキュメント
 
 - [Network Architecture](docs/architecture/network.md)
+- [Storage Architecture](docs/architecture/storage.md)
 - [Credential Handling](docs/security/credential-handling.md)
 - [Ops Devcontainer](docs/bootstrap/ops-devcontainer.md)
 - [Root of Trust](docs/bootstrap/root-of-trust.md)

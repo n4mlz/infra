@@ -31,10 +31,16 @@ platform/
     external-secrets/       # External Secrets Operator
     cert-manager/           # cert-manager HelmRelease
     external-dns/           # external-dns HelmRelease
+    snapshot-controller/    # CSI VolumeSnapshot CRD + controller
+    longhorn/               # Longhorn HelmRelease
+    directpv/               # DirectPV CSI driver manifest
+    minio-operator/         # MinIO Operator manifest
   config/
     external-secrets/       # 1Password → Kubernetes Secret
     clusterissuers/         # cert-manager ClusterIssuer
     gateway/                # shared public Gateway
+    storage/                # StorageClass / VolumeSnapshotClass
+    minio/                  # MinIO Tenant / credentials / NetworkPolicy
 
 apps/
   smoke-test/               # 検証用 workload (HTTPRoute → Gateway)

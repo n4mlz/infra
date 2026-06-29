@@ -70,6 +70,7 @@ nodes:
     patches:
       - "@./patches/addressless-public-vlan.yaml"
       - "@./patches/public-gateway-node-label.yaml"
+      - "@./patches/storage-node-label.yaml"
     networkInterfaces:
       - interface: eth0
         addresses:
@@ -90,10 +91,53 @@ nodes:
     patches:
       - "@./patches/addressless-public-vlan.yaml"
       - "@./patches/public-gateway-node-label.yaml"
+      - "@./patches/storage-node-label.yaml"
     networkInterfaces:
       - interface: eth0
         addresses:
           - 10.240.30.5/16
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 10.240.255.254
+      - interface: eth1
+        dhcp: false
+
+  - hostname: wk-03
+    controlPlane: false
+    ipAddress: 10.240.30.6
+    installDisk: /dev/sda
+    nameservers:
+      - 1.1.1.1
+      - 8.8.8.8
+    patches:
+      - "@./patches/addressless-public-vlan.yaml"
+      - "@./patches/public-gateway-node-label.yaml"
+      - "@./patches/storage-node-label.yaml"
+    networkInterfaces:
+      - interface: eth0
+        addresses:
+          - 10.240.30.6/16
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 10.240.255.254
+      - interface: eth1
+        dhcp: false
+
+  - hostname: wk-04
+    controlPlane: false
+    ipAddress: 10.240.30.7
+    installDisk: /dev/sda
+    nameservers:
+      - 1.1.1.1
+      - 8.8.8.8
+    patches:
+      - "@./patches/addressless-public-vlan.yaml"
+      - "@./patches/public-gateway-node-label.yaml"
+      - "@./patches/storage-node-label.yaml"
+    networkInterfaces:
+      - interface: eth0
+        addresses:
+          - 10.240.30.7/16
         routes:
           - network: 0.0.0.0/0
             gateway: 10.240.255.254
