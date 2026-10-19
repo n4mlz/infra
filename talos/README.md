@@ -79,7 +79,7 @@ task talos:status
 ```
 talos/
   talconfig.yaml          # cluster topology definition
-  schematic-storage.yaml  # Talos Factory schematic for storage extensions
+  schematics.yaml         # Talos Factory schematic: iscsi-tools + util-linux-tools
   talsecret.sops.yaml     # encrypted Talos secrets
   cilium-values.yaml      # Cilium Helm values (initial bootstrap only)
   patches/
@@ -87,7 +87,7 @@ talos/
     addressless-public-vlan.yaml  # disable IPv6 SLAAC on public VLAN interface
     public-gateway-node-label.yaml  # node label for kube-vip scheduling
     storage-node-label.yaml  # node label for storage workloads
-  Taskfile.yml            # talos operations (apply-initial, apply, bootstrap, render)
+  Taskfile.yml            # talos operations (apply-initial, apply, bootstrap, render, upgrade-schematic)
 ```
 
 ## Gateway Workers
@@ -100,4 +100,14 @@ wk-01 から wk-04 は public Gateway トラフィックを処理するため、
 ## Storage Workers
 
 wk-01 から wk-04 は storage workload を処理するため、`node-role.n4mlz.dev/storage=true` label を Talos patch で付与する。
-Longhorn 用 Talos extension は `schematic-storage.yaml` で管理し、生成された installer image で worker を upgrade する。
+Talos の system extension (iscsi-tools, util-linux-tools) は `schematics.yaml` で定義し、`task talos:upgrade-schematic` で全 node に適用する。
+
+## Talos バージョン更新
+
+`talconfig.yaml` の `talosVersion` が最終目標バージョン。最終目標より古いノードがある場合は、Talos の互換性情報に従って中間バージョンを経由し、各段階を全ノードへ順に適用する。`talosctl` は devcontainer に含まれる `TALOSCTL_VERSION` を使い、Talos サーバーと同じリリース系列に合わせる。
+
+```bash
+task talos:upgrade-schematic VERSION=v1.x.y
+```
+
+各段階で control plane を1台ずつ先に更新し、etcd とノードが正常なことを確認してから次の段階へ進む。最後は `talosVersion` と同じ値で実行する。

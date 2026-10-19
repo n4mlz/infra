@@ -1,0 +1,9 @@
+# This file defines Talos system extensions for custom installer images.
+# Posted to https://factory.talos.dev/schematics via task talos:upgrade-schematic.
+# Generated installer image: factory.talos.dev/installer/${SCHEMATIC_ID}:${TALOS_VERSION}
+
+customization:
+  systemExtensions:
+    officialExtensions:
+      - siderolabs/iscsi-tools
+      - siderolabs/util-linux-tools

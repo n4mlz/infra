@@ -7,7 +7,7 @@ ARG USERNAME=user
 ARG USER_UID=1000
 ARG USER_GID=1000
 ARG TOFU_VERSION=1.10.0
-ARG TALOSCTL_VERSION=1.9.1
+ARG TALOSCTL_VERSION=1.14.4
 ARG KUBECTL_VERSION=1.32.1
 ARG HELM_VERSION=3.17.0
 ARG TALHELPER_VERSION=3.1.9
@@ -22,6 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     gnupg \
     jq \
+    yq \
     bash \
     sudo \
   && rm -rf /var/lib/apt/lists/*

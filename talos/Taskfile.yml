@@ -1,12 +1,19 @@
 # This Taskfile defines Talos operations using talhelper.
 # The SOPS age private key is restored by `task pull-age-key` (root Taskfile) before rendering.
+# Node IPs are read dynamically from talconfig.yaml, not hardcoded here.
 
-version: '3'
+version: "3"
 
 vars:
   CLUSTER_NAME: n4mlz-cluster
   OUT_DIR: ../.local/talos/clusterconfig
   AGE_KEY_FILE: ../.local/sops/age/keys.txt
+  CONTROL_PLANES:
+    sh: yq '.nodes[] | select(.controlPlane == true) | .ipAddress' talconfig.yaml | tr '\n' ' '
+  WORKERS:
+    sh: yq '.nodes[] | select(.controlPlane == false) | .ipAddress' talconfig.yaml | tr '\n' ' '
+  CONFIG_TALOS_VERSION:
+    sh: yq -r '.talosVersion' talconfig.yaml
 
 tasks:
   gen-secret:
@@ -58,3 +65,49 @@ tasks:
     cmds:
       - TALOSCONFIG={{.OUT_DIR}}/talosconfig talosctl health --server=false || true
       - KUBECONFIG=../.local/kubeconfig kubectl get nodes -o wide || true
+
+  upgrade-schematic:
+    desc: "Upgrade all nodes to a Talos image with system extensions defined in schematics.yaml"
+    summary: |
+      Posts talos/schematics.yaml to Talos Factory, then upgrades all nodes.
+      Each node is upgraded one at a time (control-plane first, then workers).
+      Health check between each node ensures cluster stability.
+      Pass VERSION=vX.Y.Z to upgrade to an intermediate version before the configured target.
+    vars:
+      SCHEMATIC_ID:
+        sh: curl -sS -X POST --data-binary @schematics.yaml https://factory.talos.dev/schematics | jq -r '.id'
+      TARGET_TALOS_VERSION: '{{.VERSION | default .CONFIG_TALOS_VERSION}}'
+    cmds:
+      - 'echo "SCHEMATIC_ID: {{.SCHEMATIC_ID}}, TALOS_VERSION: {{.TARGET_TALOS_VERSION}}"'
+      - defer: 'echo "Done. Verify with: talosctl -n <IP> get extensions"'
+      - |
+        for node in {{.CONTROL_PLANES}}; do
+          current_version=$(talosctl -n "$node" version --short | sed -n '/Server:/,$p' | awk '/Tag:/ {print $2; exit}')
+          if [ "$current_version" = "{{.TARGET_TALOS_VERSION}}" ]; then
+            echo "$node is already at {{.TARGET_TALOS_VERSION}}; skipping"
+            continue
+          fi
+          talosctl -n "$node" upgrade --image "factory.talos.dev/installer/{{.SCHEMATIC_ID}}:{{.TARGET_TALOS_VERSION}}"
+          echo "Waiting for $node to become reachable..."
+          until talosctl -n "$node" version --short >/dev/null 2>&1; do sleep 5; done
+          echo "Waiting for etcd and cluster health..."
+          until talosctl -n "$node" health --server=false --wait-timeout=30s 2>&1 >/dev/null; do sleep 10; done
+        done
+      - |
+        for node in {{.WORKERS}}; do
+          current_version=$(talosctl -n "$node" version --short | sed -n '/Server:/,$p' | awk '/Tag:/ {print $2; exit}')
+          if [ "$current_version" = "{{.TARGET_TALOS_VERSION}}" ]; then
+            echo "$node is already at {{.TARGET_TALOS_VERSION}}; skipping"
+            continue
+          fi
+          talosctl -n "$node" upgrade --image "factory.talos.dev/installer/{{.SCHEMATIC_ID}}:{{.TARGET_TALOS_VERSION}}"
+          echo "Waiting for $node to become reachable..."
+          until talosctl -n "$node" version --short >/dev/null 2>&1; do sleep 5; done
+          echo "Waiting for cluster health..."
+          until talosctl -n "$node" health --server=false --wait-timeout=30s 2>&1 >/dev/null; do sleep 10; done
+        done
+    preconditions:
+      - sh: '[ -n "$(yq ''.talosVersion'' talconfig.yaml 2>/dev/null)" ]'
+        msg: "talconfig.yaml not found or talosVersion not set"
+      - sh: "[ -f schematics.yaml ]"
+        msg: "schematics.yaml not found in talos/"
