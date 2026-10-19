@@ -89,6 +89,33 @@ Talos の disk inventory では scsi slot と serial を確認してから Longh
 - [ ] 初回: CD-ROM に Talos ISO が接続されている
 - [ ] 通常時: CD-ROM は空、boot order が disk 優先
 
+## VM の一括停止・再起動
+
+この Terraform 構成が管理する VM（`cp-01`〜`cp-03`、`wk-01`〜`wk-04`）は、`vm_started` で起動状態を制御する。
+Proxmox 上の Terraform 管理外 VM は対象にならない。
+
+devcontainer 内で実行する。
+
+```bash
+cd terraform/proxmox
+
+export TF_VAR_proxmox_api_token_id="$(op read 'op://Personal/Proxmox/token_id')"
+export TF_VAR_proxmox_api_token_secret="$(op read 'op://Personal/Proxmox/secret')"
+
+tofu plan -var='vm_started=false' -out=/tmp/stop-vms.tfplan
+tofu apply /tmp/stop-vms.tfplan
+```
+
+再起動する場合は、通常のデフォルト値を明示して apply する。
+
+```bash
+tofu apply -var='vm_started=true'
+```
+
+`vm_started` のデフォルト値は `true` のため、通常の `tofu apply` では VM が起動状態になる。停止状態を維持したい場合は、毎回 `-var='vm_started=false'` を指定する。
+
+全 VM を停止すると Kubernetes クラスタも停止するため、Longhorn や MinIO の処理中には実行しない。
+
 ## シークレット
 
 絶対にコミットしないもの：

@@ -64,3 +64,9 @@ variable "vm_public_vlan_id" {
   default     = null
   description = "VLAN ID for the public NIC on worker nodes. Set to null to skip second NIC."
 }
+
+variable "vm_started" {
+  type        = bool
+  default     = true
+  description = "Whether managed VMs should be running"
+}

@@ -21,6 +21,6 @@ module "talos_vm" {
   iso_file_id               = var.talos_iso_file_id
   bridge                    = var.vm_bridge
   public_vlan_id            = each.value.role == "worker" ? var.vm_public_vlan_id : null
-  started                   = true
+  started                   = var.vm_started
   boot_order                = var.talos_boot_order
 }
