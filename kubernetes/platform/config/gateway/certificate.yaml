@@ -13,3 +13,18 @@ spec:
     kind: ClusterIssuer
   dnsNames:
     - "*.n4mlz.dev"
+---
+# This Certificate covers the XLAIR apex domain and its subdomains.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: xlair-dev-tls
+  namespace: platform
+spec:
+  secretName: xlair-dev-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - xlair.dev
+    - "*.xlair.dev"

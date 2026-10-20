@@ -93,6 +93,27 @@ kubectl -n platform get certificate wildcard-n4mlz-dev-tls
 kubectl -n external-dns logs deploy/external-dns --tail=50
 ```
 
+### 追加ドメインの HTTPS
+
+追加するドメインは、cert-manager の DNS-01 token で DNS challenge を作成できる必要がある。apex と wildcard subdomain は別の DNS name として Certificate に含め、Gateway にはそれぞれに対応する hostname listener を設定する。
+
+`xlair-dev-tls` は `xlair.dev` と `*.xlair.dev` を含み、両 listener から参照される。既存の Cloudflare token が `xlair.dev` Zone の DNS 編集権限を持たない場合は、1Password の `Cloudflare cert-manager DNS01 token` を更新する。Secret 値は表示せず、Certificate と ACME challenge の状態で確認する。
+
+```bash
+kubectl -n platform get certificate xlair-dev-tls
+kubectl -n platform describe certificate xlair-dev-tls
+kubectl -n platform get certificaterequest,order,challenge
+kubectl -n platform get gateway public-gateway
+```
+
+### 既存 DNS レコードの ExternalDNS 管理への切替
+
+ExternalDNS は `txt` registry と `txtOwnerId: n4mlz-cluster` を使う。既存 A レコードに対応する ExternalDNS ownership TXT がない場合、そのレコードは未所有として扱われ、HTTPRoute を追加しても更新されない。
+
+既存レコードを維持したまま管理を引き継ぐ場合は、ExternalDNS が生成する正確な ownership TXT を事前に登録する。TXT を用意しない場合は、HTTPRoute を GitOps に追加した後、Cloudflare から対象の既存 A レコードを削除する。ExternalDNS が次の reconcile で Gateway の A レコードと ownership TXT を作成する。`policy: upsert-only` のため、HTTPRoute を削除しても DNS レコードは削除されない。
+
+切替後は A レコードの target、Cloudflare proxy 設定、ExternalDNS ownership TXT を確認する。`txtOwnerId` や TXT prefix/suffix を変える場合は既存 ownership を失うため、別途移行手順が必要。
+
 ### 6. 接続確認
 
 ```bash

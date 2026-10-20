@@ -30,3 +30,41 @@ spec:
       allowedRoutes:
         namespaces:
           from: All
+    - name: http-xlair-apex
+      hostname: xlair.dev
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: http-xlair-subdomains
+      hostname: "*.xlair.dev"
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https-xlair-apex
+      hostname: xlair.dev
+      port: 443
+      protocol: HTTPS
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: xlair-dev-tls
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https-xlair-subdomains
+      hostname: "*.xlair.dev"
+      port: 443
+      protocol: HTTPS
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: xlair-dev-tls
+      allowedRoutes:
+        namespaces:
+          from: All
