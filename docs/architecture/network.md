@@ -85,6 +85,13 @@ Service VIP pool をすべて Service に使うため、node 用 public IP は�
 Talos ノードは Tailscale Tailnet 上に直接参加していない。
 同じ LAN 上の VM を subnet router として設定し、`10.240.0.0/16` を Tailnet に広報している。
 
+Kubernetes Service の Tailnet 公開には Tailscale Kubernetes Operator を使う。
+Operator は指定した Service だけを Tailnet に接続する。既存 subnet router による Talos node network の経路広告とは用途が異なり、Operator はこれを置き換えない。
+HTTP(S) の公開には既存 Istio Gateway を使い、Tailnet 内だけに公開する Service は Tailscale Operator の ingress をアプリ側で明示する。
+
+Tailnet 公開用 Service は `tailscale.com/expose: "true"` annotation を使う。これにより既存の kube-vip public IP pool を消費せずに Service を Tailnet に公開できる。
+Tailscale Operator の初期設定と確認手順は [Tailscale Operator runbook](../runbooks/6-tailscale-operator.md) を参照。
+
 Talos は初回 boot 時に DHCP から IP を取得するため、初回 config apply までは
 DHCP 払い出しの IP に到達できる必要がある。そのためサブネット全体を広報する。
 

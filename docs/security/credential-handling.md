@@ -16,6 +16,7 @@ public インフラリポジトリにおけるシークレット管理のルー�
 | Proxmox API トークン | 1Password | 実行時に `op read` で注入 |
 | Cloudflare API トークン | 1Password | 実行時に `op read` で注入 |
 | Tailscale 認証キー | 1Password | 実行時に `op read` で注入 |
+| Tailscale Kubernetes Operator OAuth credentials | 1Password | External Secrets Operator が `tailscale/operator-oauth` Secret に同期 |
 | GitHub Flux Bootstrap Token | 1Password | Flux bootstrap 時に `op read` で注入。fine-grained PAT: Administration(read), Contents(read/write), Metadata(read), n4mlz/infra のみ |
 | SOPS age private key | 1Password | `task pull-age-key` で `.local/` に復元 |
 | Talos secrets (暗号化) | Git (public) | `talsecret.sops.yaml`。SOPS で暗号化済み |

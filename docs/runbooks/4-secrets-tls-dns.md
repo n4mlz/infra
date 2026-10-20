@@ -22,6 +22,7 @@ Secret value は 1Password を source of truth とする。Git には 1Password 
 | item title | field label | 用途 |
 |------------|-------------|------|
 | `External Secrets Operator` | `token` | External Secrets Operator が `Infra` vault を読むための bootstrap token |
+| `Tailscale Kubernetes Operator` | `client_id`, `client_secret` | Tailscale Kubernetes Operator の OAuth 認証 |
 | `Cloudflare cert-manager DNS01 token` | `token` | cert-manager DNS01 challenge |
 | `Cloudflare external-dns token` | `token` | external-dns の DNS record 管理 |
 

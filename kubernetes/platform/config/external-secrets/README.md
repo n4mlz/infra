@@ -8,7 +8,7 @@
 |--------------|------|
 | `bootstrap` | External Secrets Operator が 1Password を読むための service account token。SOPS で `stringData` のみ暗号化する |
 | `stores` | `Infra` vault を参照する `ClusterSecretStore` |
-| `externalsecrets` | 1Password item field から Kubernetes Secret の形へ変換する `ExternalSecret` |
+| `secrets` | 1Password item field から Kubernetes Secret の形へ変換する `ExternalSecret` |
 
 ## 1Password item
 
@@ -16,6 +16,7 @@
 
 | item title | field label | 用途 |
 |------------|-------------|------|
+| `Tailscale Kubernetes Operator` | `client_id`, `client_secret` | Tailscale Kubernetes Operator の OAuth 認証 |
 | `Cloudflare cert-manager DNS01 token` | `token` | cert-manager DNS01 challenge |
 | `Cloudflare external-dns token` | `token` | external-dns の DNS record 管理 |
 

@@ -29,6 +29,16 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
+  name: tailscale
+  labels:
+    # Tailscale ingress proxies need privileged access to create /dev/net/tun.
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/enforce-version: latest
+    secrets.n4mlz.dev/onepassword-infra: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
   name: cert-manager
   labels:
     secrets.n4mlz.dev/onepassword-infra: "true"

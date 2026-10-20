@@ -33,6 +33,7 @@ platform/
     external-dns/           # external-dns HelmRelease
     snapshot-controller/    # CSI VolumeSnapshot CRD + controller
     longhorn/               # Longhorn HelmRelease
+    tailscale/              # Tailscale Kubernetes Operator
   config/
     external-secrets/       # 1Password → Kubernetes Secret
     clusterissuers/         # cert-manager ClusterIssuer

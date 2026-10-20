@@ -1,0 +1,25 @@
+# This HelmRelease installs the Tailscale Kubernetes Operator.
+# The operator-oauth Secret is synchronized from 1Password by External Secrets Operator.
+
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: tailscale-operator
+  namespace: tailscale
+spec:
+  interval: 10m
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  chart:
+    spec:
+      chart: tailscale-operator
+      version: "1.104.1"
+      sourceRef:
+        kind: HelmRepository
+        name: tailscale
+        namespace: flux-system
+      interval: 24h

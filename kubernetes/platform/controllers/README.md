@@ -15,6 +15,7 @@
 | external-dns | Cloudflare DNS record の自動管理 |
 | snapshot-controller | CSI VolumeSnapshot API |
 | longhorn | 分散ブロックストレージ CSI |
+| tailscale | Tailnet と Kubernetes Service の接続 |
 
 ## 追加手順
 
