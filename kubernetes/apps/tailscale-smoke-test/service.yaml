@@ -1,0 +1,17 @@
+# This service exposes the smoke test to the tailnet through Tailscale Operator.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  namespace: tailscale-smoke-test
+  annotations:
+    tailscale.com/expose: "true"
+    tailscale.com/hostname: infra-tailscale-smoke-test
+spec:
+  selector:
+    app.kubernetes.io/name: tailscale-smoke-test
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

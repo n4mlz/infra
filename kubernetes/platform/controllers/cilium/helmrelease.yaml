@@ -31,6 +31,8 @@ spec:
       mode: kubernetes
 
     kubeProxyReplacement: true
+    socketLB:
+      hostNamespaceOnly: true
     devices: eth+
 
     bpf:

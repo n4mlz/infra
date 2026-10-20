@@ -1,0 +1,14 @@
+# This claim provisions the smoke test's Longhorn-backed persistent volume.
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data
+  namespace: tailscale-smoke-test
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-rwo
+  resources:
+    requests:
+      storage: 64Mi

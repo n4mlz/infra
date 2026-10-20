@@ -1,0 +1,6 @@
+# This namespace contains the Tailscale and persistent volume smoke test.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tailscale-smoke-test

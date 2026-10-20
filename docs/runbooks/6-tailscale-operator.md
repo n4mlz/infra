@@ -74,8 +74,18 @@ spec:
 
 Operator の proxy は Tailnet から Service への ingress を提供する。公開対象の制御は Tailnet policy と Service annotation の両方で管理する。
 
+Cilium を kube-proxy replacement mode で使う場合、Pod namespace 内の socket load balancing を無効にする `socketLB.hostNamespaceOnly: true` が必要。Tailscale proxy が Pod 内で設定する netfilter forwarding rules を ClusterIP 接続が迂回しないようにする。この値は Cilium の bootstrap values と Flux HelmRelease の両方に設定する。
+
+反映後は Cilium の実効状態と ConfigMap の host namespace 設定を確認する。kube-proxy replacement が有効な場合、ConfigMap の `bpf-lb-sock` の値だけでは socket load balancing の実効状態を判定できない。
+
+```bash
+kubectl -n kube-system exec ds/cilium -- cilium-dbg status --verbose | grep -A3 KubeProxyReplacement
+kubectl -n kube-system get cm cilium-config -o jsonpath='{.data.bpf-lb-sock-hostns-only}{"\n"}'
+```
+
 ## 関連資料
 
 - [Network Architecture](../architecture/network.md)
 - [Install the Tailscale Kubernetes Operator](https://tailscale.com/docs/kubernetes-operator/install-operator)
 - [Expose a cluster workload to your tailnet](https://tailscale.com/docs/kubernetes-operator/ingress/expose-workload-to-tailnet-l3)
+- [Compatibility for the Tailscale Kubernetes Operator](https://tailscale.com/docs/kubernetes-operator/reference/compatibility)
