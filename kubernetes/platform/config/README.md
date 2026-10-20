@@ -10,3 +10,4 @@ controllers が提供する CRD を利用するため、`platform-controllers` �
 | external-secrets | External Secrets Operator の設定（ClusterSecretStore, ExternalSecret） |
 | clusterissuers | cert-manager ClusterIssuer（DNS01 Cloudflare） |
 | gateway | shared public Gateway（HTTPS entrypoint）と wildcard TLS Certificate |
+| storage | Longhorn StorageClass / VolumeSnapshotClass |

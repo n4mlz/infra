@@ -14,7 +14,6 @@ module "talos_vm" {
   memory                    = each.value.memory
   disk_gb                   = each.value.disk_gb
   persistent_volume_disk_gb = lookup(each.value, "persistent_volume_disk_gb", 0)
-  object_storage_disk_gb    = lookup(each.value, "object_storage_disk_gb", 0)
   bootstrap                 = lookup(each.value, "bootstrap", false)
   tags                      = each.value.tags
   datastore_id              = var.vm_datastore_id

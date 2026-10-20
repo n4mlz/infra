@@ -31,6 +31,8 @@ spec:
 
     defaultSettings:
       defaultDataPath: /var/mnt/persistent-volume
+      engineImagePodLivenessProbeTimeout: 10
+      engineImagePodLivenessProbeFailureThreshold: 6
       storageMinimalAvailablePercentage: 20
       replicaAutoBalance: best-effort
       allowRecurringJobWhileVolumeDetached: true

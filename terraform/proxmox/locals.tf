@@ -41,7 +41,6 @@ locals {
       memory                    = 4096
       disk_gb                   = 32
       persistent_volume_disk_gb = 256
-      object_storage_disk_gb    = 256
       bootstrap                 = false
       tags                      = ["talos", "k8s", "worker", "storage"]
     }
@@ -53,7 +52,6 @@ locals {
       memory                    = 4096
       disk_gb                   = 32
       persistent_volume_disk_gb = 256
-      object_storage_disk_gb    = 256
       bootstrap                 = false
       tags                      = ["talos", "k8s", "worker", "storage"]
     }
@@ -65,7 +63,6 @@ locals {
       memory                    = 4096
       disk_gb                   = 32
       persistent_volume_disk_gb = 256
-      object_storage_disk_gb    = 256
       bootstrap                 = false
       tags                      = ["talos", "k8s", "worker", "storage"]
     }
@@ -77,7 +74,6 @@ locals {
       memory                    = 4096
       disk_gb                   = 32
       persistent_volume_disk_gb = 256
-      object_storage_disk_gb    = 256
       bootstrap                 = false
       tags                      = ["talos", "k8s", "worker", "storage"]
     }

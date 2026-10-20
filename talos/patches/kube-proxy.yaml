@@ -1,0 +1,5 @@
+# This Talos config document disables kube-proxy because Cilium provides service routing.
+
+apiVersion: v1alpha1
+kind: KubeProxyConfig
+enabled: false

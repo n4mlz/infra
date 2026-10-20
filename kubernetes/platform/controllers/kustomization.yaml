@@ -15,5 +15,3 @@ resources:
   - external-dns
   - snapshot-controller
   - longhorn
-  - directpv
-  - minio-operator

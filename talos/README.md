@@ -83,10 +83,10 @@ talos/
   talsecret.sops.yaml     # encrypted Talos secrets
   cilium-values.yaml      # Cilium Helm values (initial bootstrap only)
   patches/
-    cni.yaml              # CNI none + kube-proxy disabled
+    kube-proxy.yaml              # Cilium が Service routing を担うため kube-proxy を無効化
+    longhorn-data-path.yaml      # Longhorn disk path を kubelet container に mount
     addressless-public-vlan.yaml  # disable IPv6 SLAAC on public VLAN interface
     public-gateway-node-label.yaml  # node label for kube-vip scheduling
-    storage-node-label.yaml  # node label for storage workloads
   Taskfile.yml            # talos operations (apply-initial, apply, bootstrap, render, upgrade-schematic)
 ```
 
@@ -99,7 +99,7 @@ wk-01 から wk-04 は public Gateway トラフィックを処理するため、
 
 ## Storage Workers
 
-wk-01 から wk-04 は storage workload を処理するため、`node-role.n4mlz.dev/storage=true` label を Talos patch で付与する。
+wk-01 から wk-04 は scsi1 (`<node>-pv-0`) を Talos User Volume `persistent-volume` として `/var/mnt/persistent-volume` に mount し、Longhorn の data path に使う。ディスクは `pv-0` serial の symlink で選択するため、`/dev/sdX` の列挙順に依存しない。
 Talos の system extension (iscsi-tools, util-linux-tools) は `schematics.yaml` で定義し、`task talos:upgrade-schematic` で全 node に適用する。
 
 ## Talos バージョン更新

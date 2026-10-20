@@ -57,26 +57,24 @@ tofu apply
 
 ## 作成予定 VM
 
-| 名前 | VMID | 役割 | CPU | メモリ | system disk | persistent volume disk | object storage disk |
-|------|------|------|-----|--------|-------------|---------------|------------|
-| cp-01 | 3101 | control-plane | 1 | 8192 | 32G | - | - |
-| cp-02 | 3102 | control-plane | 1 | 8192 | 32G | - | - |
-| cp-03 | 3103 | control-plane | 1 | 8192 | 32G | - | - |
-| wk-01 | 3201 | worker | 1 | 4096 | 32G | 256G | 256G |
-| wk-02 | 3202 | worker | 1 | 4096 | 32G | 256G | 256G |
-| wk-03 | 3203 | worker | 1 | 4096 | 32G | 256G | 256G |
-| wk-04 | 3204 | worker | 1 | 4096 | 32G | 256G | 256G |
+| 名前 | VMID | 役割 | CPU | メモリ | system disk | persistent volume disk |
+|------|------|------|-----|--------|-------------|-----------------------|
+| cp-01 | 3101 | control-plane | 1 | 8192 | 32G | - |
+| cp-02 | 3102 | control-plane | 1 | 8192 | 32G | - |
+| cp-03 | 3103 | control-plane | 1 | 8192 | 32G | - |
+| wk-01 | 3201 | worker | 1 | 4096 | 32G | 256G |
+| wk-02 | 3202 | worker | 1 | 4096 | 32G | 256G |
+| wk-03 | 3203 | worker | 1 | 4096 | 32G | 256G |
+| wk-04 | 3204 | worker | 1 | 4096 | 32G | 256G |
 
-worker の追加 disk は用途を分離する。
+worker の scsi1 (`<node>-pv-0`) を Longhorn 用 User Volume として mount する。
 
 | interface | 用途 | serial |
 |-----------|------|--------|
 | scsi0 | Talos system disk | provider generated |
 | scsi1 | persistent volume | `<node>-pv-0` |
-| scsi2 | object storage | `<node>-object-0` |
 
-persistent volume disk と object storage disk はどちらも 256G のため、容量だけで識別しない。
-Talos の disk inventory では scsi slot と serial を確認してから Longhorn mount / DirectPV init を行う。
+Talos の disk inventory では scsi slot と serial を確認する。
 
 ## 確認事項
 
@@ -85,7 +83,7 @@ Talos の disk inventory では scsi slot と serial を確認してから Longh
 - [ ] ネットワークが vmbr0 に接続されている
 - [ ] worker の eth1（public VLAN）が接続されている
 - [ ] QEMU Guest Agent が有効
-- [ ] worker の scsi1/scsi2 serial が用途別に識別できる
+- [ ] worker の scsi1 serial が persistent volume 用 disk として識別できる
 - [ ] 初回: CD-ROM に Talos ISO が接続されている
 - [ ] 通常時: CD-ROM は空、boot order が disk 優先
 
@@ -95,6 +93,7 @@ Talos の disk inventory では scsi slot と serial を確認してから Longh
 Proxmox 上の Terraform 管理外 VM は対象にならない。
 
 devcontainer 内で実行する。
+`tofu apply` が表示する plan を確認し、想定どおりの場合に承認する。
 
 ```bash
 cd terraform/proxmox
@@ -102,8 +101,7 @@ cd terraform/proxmox
 export TF_VAR_proxmox_api_token_id="$(op read 'op://Personal/Proxmox/token_id')"
 export TF_VAR_proxmox_api_token_secret="$(op read 'op://Personal/Proxmox/secret')"
 
-tofu plan -var='vm_started=false' -out=/tmp/stop-vms.tfplan
-tofu apply /tmp/stop-vms.tfplan
+tofu apply -var='vm_started=false'
 ```
 
 再起動する場合は、通常のデフォルト値を明示して apply する。
@@ -114,7 +112,7 @@ tofu apply -var='vm_started=true'
 
 `vm_started` のデフォルト値は `true` のため、通常の `tofu apply` では VM が起動状態になる。停止状態を維持したい場合は、毎回 `-var='vm_started=false'` を指定する。
 
-全 VM を停止すると Kubernetes クラスタも停止するため、Longhorn や MinIO の処理中には実行しない。
+全 VM を停止すると Kubernetes クラスタも停止するため、Longhorn の処理中には実行しない。
 
 ## シークレット
 

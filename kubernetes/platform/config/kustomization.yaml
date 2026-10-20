@@ -7,4 +7,3 @@ resources:
   - clusterissuers
   - gateway
   - storage
-  - minio

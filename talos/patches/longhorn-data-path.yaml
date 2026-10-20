@@ -1,0 +1,12 @@
+# This Talos patch exposes the Longhorn disk mount inside the kubelet container.
+
+machine:
+  kubelet:
+    extraMounts:
+      - destination: /var/mnt/persistent-volume
+        type: bind
+        source: /var/mnt/persistent-volume
+        options:
+          - bind
+          - rshared
+          - rw

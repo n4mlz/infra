@@ -13,6 +13,8 @@
 | external-secrets | 外部 Secret provider（1Password）と Kubernetes Secret の同期 |
 | cert-manager | TLS 証明書の自動発行・更新 |
 | external-dns | Cloudflare DNS record の自動管理 |
+| snapshot-controller | CSI VolumeSnapshot API |
+| longhorn | 分散ブロックストレージ CSI |
 
 ## 追加手順
 
