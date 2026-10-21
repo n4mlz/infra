@@ -97,7 +97,7 @@ kubectl -n external-dns logs deploy/external-dns --tail=50
 
 追加するドメインは、cert-manager の DNS-01 token で DNS challenge を作成できる必要がある。apex と wildcard subdomain は別の DNS name として Certificate に含め、Gateway にはそれぞれに対応する hostname listener を設定する。
 
-`xlair-dev-tls` は `xlair.dev` と `*.xlair.dev` を含み、両 listener から参照される。既存の Cloudflare token が `xlair.dev` Zone の DNS 編集権限を持たない場合は、1Password の `Cloudflare cert-manager DNS01 token` を更新する。Secret 値は表示せず、Certificate と ACME challenge の状態で確認する。
+`xlair-dev-tls` は `xlair.dev`、`*.xlair.dev`、`*.stg.xlair.dev` を含み、両 listener から参照される。既存の Cloudflare token が `xlair.dev` Zone の DNS 編集権限を持たない場合は、1Password の `Cloudflare cert-manager DNS01 token` を更新する。Secret 値は表示せず、Certificate と ACME challenge の状態で確認する。
 
 ```bash
 kubectl -n platform get certificate xlair-dev-tls

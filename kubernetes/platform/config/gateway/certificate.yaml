@@ -28,3 +28,4 @@ spec:
   dnsNames:
     - xlair.dev
     - "*.xlair.dev"
+    - "*.stg.xlair.dev"
