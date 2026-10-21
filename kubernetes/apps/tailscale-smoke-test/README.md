@@ -10,10 +10,10 @@ Tailscale Kubernetes Operator による Service の Tailnet 公開と、`longhor
 
 ## 確認方法
 
-Service の hostname は `infra-tailscale-smoke-test`。Tailnet に接続した端末から次を実行し、応答本文を確認する。
+Service の hostname は `tailscale-smoke-test`。Tailnet に接続した端末から次を実行し、応答本文を確認する。
 
 ```bash
-curl http://infra-tailscale-smoke-test/
+curl http://tailscale-smoke-test/
 ```
 
 Tailnet policy で接続元から `tag:k8s` の TCP/80 を許可する。`tagOwners` の設定だけではサービスへの接続許可にならない。

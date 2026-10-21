@@ -1,0 +1,25 @@
+# This ConfigMap contains Gitea and PostgreSQL runtime settings.
+# Flux substitutes the Gitea hostname from the app-hostnames ConfigMap.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gitea-config
+  namespace: gitea
+data:
+  GITEA__database__DB_TYPE: postgres
+  GITEA__database__HOST: postgres:5432
+  GITEA__database__NAME: gitea
+  GITEA__database__USER: gitea
+  GITEA__server__DOMAIN: ${GITEA_TAILNET_HOSTNAME}
+  GITEA__server__ROOT_URL: "http://${GITEA_TAILNET_HOSTNAME}/"
+  GITEA__server__SSH_DOMAIN: ${GITEA_TAILNET_HOSTNAME}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  namespace: gitea
+data:
+  POSTGRES_DB: gitea
+  POSTGRES_USER: gitea

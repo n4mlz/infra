@@ -1,0 +1,8 @@
+# This namespace contains the Gitea workload.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gitea
+  labels:
+    secrets.n4mlz.dev/onepassword-infra: "true"

@@ -10,3 +10,4 @@ resources:
   - xlair-production
   - xlair-website
   - chart-review
+  - gitea

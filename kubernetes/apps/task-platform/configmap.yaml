@@ -1,4 +1,5 @@
 # This ConfigMap contains Task Platform's non-secret runtime configuration.
+# Flux substitutes the Tailscale hostname from the app-hostnames ConfigMap.
 
 apiVersion: v1
 kind: ConfigMap
@@ -6,15 +7,9 @@ metadata:
   name: task-platform-config
   namespace: task-platform
 data:
-  HOST: 0.0.0.0
-  PORT: "20003"
   TASK_PLATFORM_DB: /data/task-platform.db
   TASK_PLATFORM_LLM_BASE_URL: https://opencode.ai/zen/go/v1
   TASK_PLATFORM_LLM_MODEL: deepseek-v4.1-flash
-  TASK_PLATFORM_LLM_PROVIDER: openai-compatible
-  TASK_PLATFORM_LLM_SUPPORTS_STRUCTURED_OUTPUTS: "false"
   TASK_PLATFORM_LLM_TIMEOUT_MS: "600000"
-  TASK_PLATFORM_MCP_ALLOWED_HOSTS: infra-task-platform
+  TASK_PLATFORM_MCP_ALLOWED_HOSTS: ${TASK_PLATFORM_TAILNET_HOSTNAME}
   TASK_PLATFORM_MCP_HOST: 0.0.0.0
-  TASK_PLATFORM_MCP_PATH: /mcp
-  TASK_PLATFORM_MCP_PORT: "20004"

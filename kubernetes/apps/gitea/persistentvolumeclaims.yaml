@@ -1,0 +1,27 @@
+# These Longhorn volumes store Gitea data and PostgreSQL data.
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gitea-data
+  namespace: gitea
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-rwo
+  resources:
+    requests:
+      storage: 8Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-data
+  namespace: gitea
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-rwo
+  resources:
+    requests:
+      storage: 1Gi

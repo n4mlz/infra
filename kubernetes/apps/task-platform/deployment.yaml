@@ -7,16 +7,16 @@ metadata:
   namespace: task-platform
   annotations:
     tailscale.com/expose: "true"
-    tailscale.com/hostname: infra-task-platform
+    tailscale.com/hostname: ${TASK_PLATFORM_TAILNET_HOSTNAME}
 spec:
   selector:
     app.kubernetes.io/name: task-platform
   ports:
     - name: web
-      port: 20003
+      port: 80
       targetPort: web
     - name: mcp
-      port: 20004
+      port: 3100
       targetPort: mcp
 ---
 apiVersion: apps/v1
@@ -25,7 +25,6 @@ metadata:
   name: task-platform
   namespace: task-platform
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: task-platform
@@ -47,9 +46,9 @@ spec:
           image: ghcr.io/n4mlz/tasks@sha256:d5f54f678ff00110061a862cd1392d6247522493806aca1109d76b2917b08ddc
           ports:
             - name: web
-              containerPort: 20003
+              containerPort: 3000
             - name: mcp
-              containerPort: 20004
+              containerPort: 3100
           envFrom:
             - configMapRef:
                 name: task-platform-config
@@ -66,7 +65,6 @@ spec:
           livenessProbe:
             tcpSocket:
               port: web
-            periodSeconds: 20
           resources:
             requests:
               cpu: 100m

@@ -1,0 +1,91 @@
+# This Deployment serves Gitea over the tailnet and mounts its persistent data.
+# The official entrypoint starts as root and drops Gitea services to the git account.
+# Flux substitutes the Tailscale hostname from the app-hostnames ConfigMap.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitea
+  namespace: gitea
+  annotations:
+    tailscale.com/expose: "true"
+    tailscale.com/hostname: ${GITEA_TAILNET_HOSTNAME}
+spec:
+  selector:
+    app.kubernetes.io/name: gitea
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+    - name: ssh
+      port: 22
+      targetPort: ssh
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitea
+  namespace: gitea
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gitea
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: gitea
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: gitea
+          image: gitea/gitea@sha256:76f516a1a8c27e8f8e9773639bf337c0176547a2d42a80843e3f2536787341c6
+          ports:
+            - name: http
+              containerPort: 3000
+            - name: ssh
+              containerPort: 22
+          envFrom:
+            - configMapRef:
+                name: gitea-config
+          env:
+            - name: GITEA__database__PASSWD
+              valueFrom:
+                secretKeyRef:
+                  name: gitea-credentials
+                  key: GITEA__database__PASSWD
+            - name: GITEA__security__INTERNAL_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: gitea-credentials
+                  key: GITEA__security__INTERNAL_TOKEN
+            - name: GITEA__server__LFS_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: gitea-credentials
+                  key: GITEA__server__LFS_JWT_SECRET
+            - name: GITEA__oauth2__JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: gitea-credentials
+                  key: GITEA__oauth2__JWT_SECRET
+          startupProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 5
+            failureThreshold: 30
+          readinessProbe:
+            tcpSocket:
+              port: http
+          livenessProbe:
+            tcpSocket:
+              port: http
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: gitea-data

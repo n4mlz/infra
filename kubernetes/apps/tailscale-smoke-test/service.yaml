@@ -1,4 +1,5 @@
 # This service exposes the smoke test to the tailnet through Tailscale Operator.
+# Flux substitutes the Tailscale hostname from the app-hostnames ConfigMap.
 
 apiVersion: v1
 kind: Service
@@ -7,7 +8,7 @@ metadata:
   namespace: tailscale-smoke-test
   annotations:
     tailscale.com/expose: "true"
-    tailscale.com/hostname: infra-tailscale-smoke-test
+    tailscale.com/hostname: ${TAILSCALE_SMOKE_TEST_HOSTNAME}
 spec:
   selector:
     app.kubernetes.io/name: tailscale-smoke-test

@@ -1,0 +1,12 @@
+# This ConfigMap supplies Flux post-build substitutions for tailnet service hostnames.
+# The apps Kustomization reads it after depending on platform-config.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-hostnames
+  namespace: flux-system
+data:
+  GITEA_TAILNET_HOSTNAME: gitea
+  TASK_PLATFORM_TAILNET_HOSTNAME: task-platform
+  TAILSCALE_SMOKE_TEST_HOSTNAME: tailscale-smoke-test
