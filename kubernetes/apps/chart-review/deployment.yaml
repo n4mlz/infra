@@ -19,7 +19,7 @@ metadata:
   name: web
   namespace: chart-review
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: chart-review
@@ -77,39 +77,6 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: data
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: data-importer
-  namespace: chart-review
-spec:
-  automountServiceAccountToken: false
-  securityContext:
-    fsGroup: 1000
-    runAsGroup: 1000
-    runAsNonRoot: true
-    runAsUser: 1000
-    seccompProfile:
-      type: RuntimeDefault
-  containers:
-    - name: importer
-      image: ghcr.io/xlair-dev/chart-review@sha256:6b20fe56e644dac2dfbe5b2f3bcd35bc06e5f16b7e611878e65d300e69fc0266
-      command:
-        - sleep
-        - infinity
-      securityContext:
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop:
-            - ALL
-      volumeMounts:
-        - name: data
-          mountPath: /app/data
-  volumes:
-    - name: data
-      persistentVolumeClaim:
-        claimName: data
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
