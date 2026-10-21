@@ -40,6 +40,9 @@ spec:
             - configMapRef:
                 name: postgres-config
           env:
+            # Longhorn mounts contain lost+found at their root.
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
