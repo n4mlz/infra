@@ -1,0 +1,35 @@
+# These routes expose XLAIR staging through the shared HTTPS Gateway.
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: api
+  namespace: xlair-staging
+spec:
+  parentRefs:
+    - name: public-gateway
+      namespace: platform
+      sectionName: https-xlair-subdomains
+  hostnames:
+    - api.stg.xlair.dev
+  rules:
+    - backendRefs:
+        - name: api
+          port: 80
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: dashboard
+  namespace: xlair-staging
+spec:
+  parentRefs:
+    - name: public-gateway
+      namespace: platform
+      sectionName: https-xlair-subdomains
+  hostnames:
+    - dash.stg.xlair.dev
+  rules:
+    - backendRefs:
+        - name: dashboard
+          port: 80

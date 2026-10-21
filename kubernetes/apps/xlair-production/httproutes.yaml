@@ -1,0 +1,35 @@
+# These routes expose XLAIR production through the shared HTTPS Gateway.
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: api
+  namespace: xlair-production
+spec:
+  parentRefs:
+    - name: public-gateway
+      namespace: platform
+      sectionName: https-xlair-subdomains
+  hostnames:
+    - api.xlair.dev
+  rules:
+    - backendRefs:
+        - name: api
+          port: 80
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: dashboard
+  namespace: xlair-production
+spec:
+  parentRefs:
+    - name: public-gateway
+      namespace: platform
+      sectionName: https-xlair-subdomains
+  hostnames:
+    - dash.xlair.dev
+  rules:
+    - backendRefs:
+        - name: dashboard
+          port: 80

@@ -1,0 +1,14 @@
+# This Longhorn volume stores the SQLite database and uploaded files.
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data
+  namespace: chart-review
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-rwo
+  resources:
+    requests:
+      storage: 1Gi

@@ -1,0 +1,70 @@
+# This Deployment serves the XLAIR staging API.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  namespace: xlair-staging
+spec:
+  selector:
+    app.kubernetes.io/name: api
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: xlair-staging
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: api
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: api
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: api
+          image: ghcr.io/xlair-dev/xlair-api@sha256:c0cec258a8665106cb0c161d2ccbd7289c58287a77ebd5f280ea838e79794df2
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: database-config
+            - configMapRef:
+                name: api-config
+            - secretRef:
+                name: database-credentials
+            - secretRef:
+                name: api-credentials
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL

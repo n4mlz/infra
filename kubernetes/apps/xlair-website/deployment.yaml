@@ -1,0 +1,86 @@
+# This Deployment serves the public XLAIR website.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: website
+  namespace: xlair-website
+spec:
+  selector:
+    app.kubernetes.io/name: website
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: website
+  namespace: xlair-website
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: website
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: website
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: website
+          image: ghcr.io/xlair-dev/xlair.dev@sha256:b0e04a591777c5b3ac4cc88f97359f2a8ab660bb2fcb5d66f557b384e7b92bd0
+          ports:
+            - name: http
+              containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: website-config
+            - secretRef:
+                name: website-credentials
+          startupProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 5
+            failureThreshold: 30
+          readinessProbe:
+            tcpSocket:
+              port: http
+          livenessProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: website
+  namespace: xlair-website
+spec:
+  parentRefs:
+    - name: public-gateway
+      namespace: platform
+      sectionName: https-xlair-apex
+  hostnames:
+    - xlair.dev
+  rules:
+    - backendRefs:
+        - name: website
+          port: 80

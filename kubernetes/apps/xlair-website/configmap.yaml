@@ -1,0 +1,13 @@
+# This ConfigMap contains non-secret runtime configuration for the XLAIR website.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: website-config
+  namespace: xlair-website
+data:
+  SITE_URL: https://xlair.dev
+  API_BASE_URL: https://api.xlair.dev
+  AUTH0_ISSUER: https://dev-2dn3mvmvr8tccoss.us.auth0.com/
+  AUTH0_AUDIENCE: https://api.xlair.dev
+  AUTH0_M2M_CLIENT_ID: Q07YCmChy6TCaVHu0MFrnl5pkN9WcRRr

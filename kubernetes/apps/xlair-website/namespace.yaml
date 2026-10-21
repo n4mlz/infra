@@ -1,0 +1,8 @@
+# This namespace contains the XLAIR public website.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: xlair-website
+  labels:
+    secrets.n4mlz.dev/onepassword-infra: "true"

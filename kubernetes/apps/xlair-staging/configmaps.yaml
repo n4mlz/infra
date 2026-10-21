@@ -1,0 +1,37 @@
+# This file contains non-secret runtime configuration for XLAIR staging.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: database-config
+  namespace: xlair-staging
+data:
+  POSTGRES_DB: xlair
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-config
+  namespace: xlair-staging
+data:
+  HOST: 0.0.0.0
+  ALLOWED_ORIGIN: "*"
+  AUTH0_ISSUER: https://dev-2dn3mvmvr8tccoss.us.auth0.com/
+  AUTH0_AUDIENCE: https://api.xlair.dev
+  AUTH0_DASHBOARD_CLIENT_ID: CjxZsjlU1cFkZIc672GJtVUtGzEQ9alg
+  POSTGRES_HOST: database
+  POSTGRES_PORT: "5432"
+  R2_ENDPOINT: https://0d380abb36d7cc5de9a641b81fd94ad1.r2.cloudflarestorage.com
+  R2_BUCKET: xlair-assets-stg
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dashboard-config
+  namespace: xlair-staging
+data:
+  APP_BASE_URL: https://dash.stg.xlair.dev
+  API_BASE_URL: https://api.stg.xlair.dev
+  AUTH0_DOMAIN: dev-2dn3mvmvr8tccoss.us.auth0.com
+  AUTH0_AUDIENCE: https://api.xlair.dev
+  AUTH0_CLIENT_ID: CjxZsjlU1cFkZIc672GJtVUtGzEQ9alg

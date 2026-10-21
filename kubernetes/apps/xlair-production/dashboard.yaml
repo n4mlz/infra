@@ -1,0 +1,69 @@
+# This Deployment serves the XLAIR production dashboard.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashboard
+  namespace: xlair-production
+spec:
+  selector:
+    app.kubernetes.io/name: dashboard
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashboard
+  namespace: xlair-production
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: dashboard
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: dashboard
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: dashboard
+          image: ghcr.io/xlair-dev/dashboard@sha256:93808c015dd886ba25fc56afee0627ff46885e872729b3b1ef872fc10ccb29e0
+          ports:
+            - name: http
+              containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: dashboard-config
+            - secretRef:
+                name: dashboard-credentials
+          startupProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 5
+            failureThreshold: 30
+          readinessProbe:
+            tcpSocket:
+              port: http
+          livenessProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL

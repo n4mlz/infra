@@ -1,0 +1,8 @@
+# This namespace contains the chart review application.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: chart-review
+  labels:
+    secrets.n4mlz.dev/onepassword-infra: "true"

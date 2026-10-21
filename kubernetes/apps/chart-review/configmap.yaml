@@ -1,0 +1,14 @@
+# This ConfigMap contains non-secret runtime configuration for chart review.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: chart-review-config
+  namespace: chart-review
+data:
+  CHART_REVIEW_DATA_DIR: /app/data
+  CHART_REVIEW_MAX_UPLOAD_SIZE_BYTES: "52428800"
+  CHART_REVIEW_SERVER_URL: https://api.xlair.dev
+  AUTH0_DOMAIN: dev-2dn3mvmvr8tccoss.us.auth0.com
+  AUTH0_AUDIENCE: https://api.xlair.dev
+  AUTH0_CLIENT_ID: Q07YCmChy6TCaVHu0MFrnl5pkN9WcRRr

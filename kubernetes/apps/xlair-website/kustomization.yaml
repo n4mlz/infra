@@ -1,0 +1,9 @@
+# This file assembles the XLAIR website workload and its external route.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - external-secret.yaml
+  - deployment.yaml

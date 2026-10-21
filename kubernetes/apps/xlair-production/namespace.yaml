@@ -1,0 +1,8 @@
+# This namespace contains the XLAIR production API, dashboard, and database.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: xlair-production
+  labels:
+    secrets.n4mlz.dev/onepassword-infra: "true"
