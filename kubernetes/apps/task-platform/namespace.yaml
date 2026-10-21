@@ -1,0 +1,8 @@
+# This namespace contains Task Platform.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: task-platform
+  labels:
+    secrets.n4mlz.dev/onepassword-infra: "true"

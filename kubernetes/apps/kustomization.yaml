@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - smoke-test
   - tailscale-smoke-test
+  - task-platform
   - xlair-staging
   - xlair-production
   - xlair-website
