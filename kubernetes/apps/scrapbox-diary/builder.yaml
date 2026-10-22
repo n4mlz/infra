@@ -22,7 +22,7 @@ spec:
               type: RuntimeDefault
           containers:
             - name: builder
-              image: ghcr.io/n4mlz/scrapbox-diary@sha256:bfd9482bbeda6ddc4049dda97b4906af861358ea569a65742860e290d934b989
+              image: ghcr.io/n4mlz/scrapbox-diary@sha256:9eb3d8d7a2556d90ebee1f87682d8acb319bd37246822f247d6df7b6f56657e5
               envFrom:
                 - secretRef:
                     name: scrapbox-diary-credentials
