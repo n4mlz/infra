@@ -1,0 +1,9 @@
+# This ConfigMap configures the viewer to load map tiles from the same origin.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: viewer-config
+  namespace: fog-of-world-viewer
+data:
+  FOG_TILE_BASE_URL: /

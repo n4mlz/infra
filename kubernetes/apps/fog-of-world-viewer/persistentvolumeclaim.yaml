@@ -1,0 +1,14 @@
+# This Longhorn volume stores the synchronized Fog of World source data.
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data
+  namespace: fog-of-world-viewer
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-rwo
+  resources:
+    requests:
+      storage: 64Mi
