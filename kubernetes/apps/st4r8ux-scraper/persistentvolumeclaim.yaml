@@ -1,0 +1,14 @@
+# This Longhorn volume preserves the scraper's seen-job state.
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data
+  namespace: st4r8ux-scraper
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-rwo
+  resources:
+    requests:
+      storage: 64Mi

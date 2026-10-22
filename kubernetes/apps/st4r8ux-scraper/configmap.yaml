@@ -1,0 +1,9 @@
+# This ConfigMap defines the public job listing URL.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: scraper-config
+  namespace: st4r8ux-scraper
+data:
+  ST4R8UX_URL: https://starbucks-job.jp

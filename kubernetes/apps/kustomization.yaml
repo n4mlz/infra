@@ -11,3 +11,6 @@ resources:
   - xlair-website
   - chart-review
   - gitea
+  - jellyfin
+  - scrapbox-diary
+  - st4r8ux-scraper

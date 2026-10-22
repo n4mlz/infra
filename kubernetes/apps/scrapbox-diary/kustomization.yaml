@@ -1,0 +1,10 @@
+# This file assembles the Scrapbox Diary workload and its shared site volume.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - external-secret.yaml
+  - persistentvolumeclaim.yaml
+  - builder.yaml
+  - web.yaml

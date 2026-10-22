@@ -1,0 +1,14 @@
+# This Longhorn RWX volume shares generated pages between the builder and web server.
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: site
+  namespace: scrapbox-diary
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: longhorn-rwx
+  resources:
+    requests:
+      storage: 64Mi

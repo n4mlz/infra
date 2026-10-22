@@ -1,0 +1,41 @@
+# This CronJob generates the Scrapbox Diary site once per hour.
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: builder
+  namespace: scrapbox-diary
+spec:
+  schedule: "0 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          automountServiceAccountToken: false
+          securityContext:
+            fsGroup: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: builder
+              image: ghcr.io/n4mlz/scrapbox-diary@sha256:bfd9482bbeda6ddc4049dda97b4906af861358ea569a65742860e290d934b989
+              envFrom:
+                - secretRef:
+                    name: scrapbox-diary-credentials
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+              volumeMounts:
+                - name: site
+                  mountPath: /app/dist
+          restartPolicy: Never
+          volumes:
+            - name: site
+              persistentVolumeClaim:
+                claimName: site

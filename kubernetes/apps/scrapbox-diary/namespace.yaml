@@ -1,0 +1,6 @@
+# This namespace contains the Scrapbox Diary workload.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: scrapbox-diary

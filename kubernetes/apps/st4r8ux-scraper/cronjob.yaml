@@ -1,0 +1,44 @@
+# This CronJob checks for new jobs at midnight in Japan Standard Time.
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: scraper
+  namespace: st4r8ux-scraper
+spec:
+  schedule: "0 0 * * *"
+  timeZone: Asia/Tokyo
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          automountServiceAccountToken: false
+          securityContext:
+            fsGroup: 10001
+            runAsGroup: 10001
+            runAsNonRoot: true
+            runAsUser: 10001
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: scraper
+              image: ghcr.io/n4mlz/st4r8ux-scraper@sha256:3af6ac6d5f85c1f6de5d6e5878994e05aaeefafb55769bcb93779139abe1cc7d
+              envFrom:
+                - configMapRef:
+                    name: scraper-config
+                - secretRef:
+                    name: scraper-credentials
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+              volumeMounts:
+                - name: data
+                  mountPath: /app/data
+          restartPolicy: Never
+          volumes:
+            - name: data
+              persistentVolumeClaim:
+                claimName: data

@@ -1,0 +1,6 @@
+# This namespace contains the st4r8ux scraper workload.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: st4r8ux-scraper

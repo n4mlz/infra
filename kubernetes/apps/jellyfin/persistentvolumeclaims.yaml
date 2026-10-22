@@ -1,0 +1,40 @@
+# These Longhorn volumes store Jellyfin configuration and media.
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: config
+  namespace: jellyfin
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-rwo
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media
+  namespace: jellyfin
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-rwo
+  resources:
+    requests:
+      storage: 64Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data
+  namespace: jellyfin
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-rwo
+  resources:
+    requests:
+      storage: 12Gi

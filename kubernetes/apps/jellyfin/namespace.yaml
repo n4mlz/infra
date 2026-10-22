@@ -1,0 +1,6 @@
+# This namespace contains the Jellyfin workload.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: jellyfin
