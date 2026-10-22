@@ -1,4 +1,4 @@
-# This ConfigMap configures the viewer to load map tiles from the same origin.
+# This ConfigMap configures the Dropbox source and tile URL used by the viewer.
 
 apiVersion: v1
 kind: ConfigMap
@@ -6,4 +6,5 @@ metadata:
   name: viewer-config
   namespace: fog-of-world-viewer
 data:
-  FOG_TILE_BASE_URL: /
+  FOG_TILE_BASE_URL: ${FOG_VIEWER_TILE_BASE_URL}
+  RCLONE_SYNC_SOURCE: dropbox:/アプリ/Fog of World

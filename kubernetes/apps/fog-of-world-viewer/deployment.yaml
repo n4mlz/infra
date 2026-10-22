@@ -1,5 +1,5 @@
-# This Deployment serves Fog of World data over the tailnet without modifying the source volume.
-# Flux substitutes the Tailscale hostname from the app-hostnames ConfigMap.
+# This Deployment syncs Fog of World data from Dropbox and serves the viewer over the tailnet.
+# Flux substitutes the Tailscale hostname and tile URL from the app-hostnames ConfigMap.
 
 apiVersion: v1
 kind: Service
@@ -33,11 +33,41 @@ spec:
     spec:
       automountServiceAccountToken: false
       securityContext:
+        fsGroup: 1000
         runAsGroup: 1000
         runAsNonRoot: true
         runAsUser: 1000
         seccompProfile:
           type: RuntimeDefault
+      initContainers:
+        - name: sync-data
+          image: rclone/rclone:1.75.2@sha256:2687085f718d3c628f7fdfb77c52a1d344332aed543110bb88088f2c70d43eb5
+          command:
+            - /bin/sh
+            - -ec
+          args:
+            - cp /secret/rclone.conf /config/rclone.conf && rclone --config=/config/rclone.conf sync "$RCLONE_SYNC_SOURCE" /data
+          env:
+            - name: RCLONE_SYNC_SOURCE
+              valueFrom:
+                configMapKeyRef:
+                  name: viewer-config
+                  key: RCLONE_SYNC_SOURCE
+            - name: HOME
+              value: /config
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: credentials
+              mountPath: /secret
+              readOnly: true
+            - name: rclone-work
+              mountPath: /config
+            - name: data
+              mountPath: /data
       containers:
         - name: viewer
           image: ghcr.io/n4mlz/fog_of_world_viewer@sha256:6568b9ade70ff6b396e49d3f3f312d7122abf5c466a8cd36d984bb2cd2590cec
@@ -61,6 +91,11 @@ spec:
               mountPath: /data
               readOnly: true
       volumes:
+        - name: credentials
+          secret:
+            secretName: fog-of-world-viewer-credentials
+        - name: rclone-work
+          emptyDir: {}
         - name: data
           persistentVolumeClaim:
             claimName: data

@@ -1,0 +1,40 @@
+# This temporary Pod provides writable access to the Jellyfin volumes during data transfer.
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: data-transfer
+  namespace: jellyfin
+spec:
+  automountServiceAccountToken: false
+  securityContext:
+    fsGroup: 1000
+    runAsGroup: 1000
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: transfer
+      image: jellyfin/jellyfin@sha256:fc1b51f4be3fba725e42dae2022d9c6a5b069acce01bef04d32fdee025dc511e
+      command:
+        - /bin/sh
+        - -c
+        - sleep infinity
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+      volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: data
+          mountPath: /media/data
+  volumes:
+    - name: config
+      persistentVolumeClaim:
+        claimName: config
+    - name: data
+      persistentVolumeClaim:
+        claimName: data
