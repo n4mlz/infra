@@ -8,18 +8,17 @@ on:
       - "flux-image-updates/**"
 
 permissions:
-  contents: write
+  contents: read
   pull-requests: write
 
 concurrency:
   group: flux-image-update-pr-${{ github.ref_name }}
-  cancel-in-progress: false
 
 jobs:
   pull-request:
     runs-on: ubuntu-latest
     steps:
-      - name: Create or update pull request and enable auto-merge
+      - name: Create or update pull request
         env:
           GH_REPO: ${{ github.repository }}
           GH_TOKEN: ${{ github.token }}
@@ -29,7 +28,6 @@ jobs:
           if [ "$service" = "$UPDATE_BRANCH" ]; then
             exit 1
           fi
-
           pull_request_url="$(gh pr list \
             --repo "$GH_REPO" \
             --base main \
@@ -45,5 +43,3 @@ jobs:
               --title "chore: update ${service} images" \
               --body "Flux detected updated container image digests for ${service}. This pull request follows the service-specific Flux image update branch.")"
           fi
-
-          gh pr merge "$pull_request_url" --repo "$GH_REPO" --auto --squash
