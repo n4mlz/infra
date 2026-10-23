@@ -23,7 +23,7 @@ metadata:
   name: jellyfin
   namespace: jellyfin
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: jellyfin

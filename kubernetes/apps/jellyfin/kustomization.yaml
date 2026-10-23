@@ -6,4 +6,3 @@ resources:
   - namespace.yaml
   - persistentvolumeclaims.yaml
   - deployment.yaml
-  - migration-pod.yaml
