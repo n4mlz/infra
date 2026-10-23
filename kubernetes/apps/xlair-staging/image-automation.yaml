@@ -1,0 +1,76 @@
+# This file tracks staging XLAIR images and commits updates for this workload set.
+
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: xlair-staging-api
+  namespace: flux-system
+spec:
+  interval: 5m
+  image: ghcr.io/xlair-dev/xlair-api
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: xlair-staging-api
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: xlair-staging-api
+  filterTags:
+    pattern: '^latest$'
+  policy:
+    alphabetical:
+      order: asc
+  digestReflectionPolicy: Always
+  interval: 5m
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: xlair-staging-dashboard
+  namespace: flux-system
+spec:
+  interval: 5m
+  image: ghcr.io/xlair-dev/dashboard
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: xlair-staging-dashboard
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: xlair-staging-dashboard
+  filterTags:
+    pattern: '^latest$'
+  policy:
+    alphabetical:
+      order: asc
+  digestReflectionPolicy: Always
+  interval: 5m
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageUpdateAutomation
+metadata:
+  name: xlair-staging
+  namespace: flux-system
+spec:
+  interval: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  git:
+    checkout:
+      ref:
+        branch: main
+    commit:
+      author:
+        name: fluxcdbot
+        email: fluxcdbot@users.noreply.github.com
+      messageTemplate: '{{range .Changed.Changes}}{{print .OldValue}} -> {{println .NewValue}}{{end}}'
+    push:
+      branch: flux-image-updates/xlair-staging
+  update:
+    path: ./kubernetes/apps/xlair-staging
+    strategy: Setters

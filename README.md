@@ -43,6 +43,7 @@ Kubernetes の desired state は Flux が `kubernetes/` 配下から同期する
 - `kubernetes/platform/controllers/`: Cilium, kube-vip, Istio, cert-manager などの controller
 - `kubernetes/platform/config/`: controller に依存する cluster-wide config
 - `kubernetes/apps/`: application workload
+- `.github/`: GitHub Actions による image update PR 運用
 - `docs/`: 人の記憶に依存しないための設計・手順書
 - `worklogs/`: 日付ごとの作業記録
 

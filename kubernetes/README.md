@@ -4,7 +4,7 @@
 
 ## 方針
 
-- `flux` は Flux 自身と同期定義を置く
+- `flux` は Flux 自身とクラスタ共通の同期設定を置く
 - `platform` はクラスタ基盤を管理する（controllers + config）
 - `apps` はアプリケーション workload を管理する
 - 手動 `kubectl apply` は原則使わない
@@ -15,6 +15,7 @@
 ```
 flux/
   flux-system/              # Flux bootstrap 生成物 (+ SOPS decryption)
+  README.md                 # Flux controller manifest 生成手順
   kustomization.yaml
   platform-controllers.yaml # → platform/controllers
   platform-config.yaml      # → platform/config (dependsOn: platform-controllers)

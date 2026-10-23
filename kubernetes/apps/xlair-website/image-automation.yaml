@@ -1,0 +1,51 @@
+# This file tracks the XLAIR website image and commits updates for this workload.
+
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: xlair-website
+  namespace: flux-system
+spec:
+  interval: 5m
+  image: ghcr.io/xlair-dev/xlair.dev
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: xlair-website
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: xlair-website
+  filterTags:
+    pattern: '^latest$'
+  policy:
+    alphabetical:
+      order: asc
+  digestReflectionPolicy: Always
+  interval: 5m
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageUpdateAutomation
+metadata:
+  name: xlair-website
+  namespace: flux-system
+spec:
+  interval: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  git:
+    checkout:
+      ref:
+        branch: main
+    commit:
+      author:
+        name: fluxcdbot
+        email: fluxcdbot@users.noreply.github.com
+      messageTemplate: '{{range .Changed.Changes}}{{print .OldValue}} -> {{println .NewValue}}{{end}}'
+    push:
+      branch: flux-image-updates/xlair-website
+  update:
+    path: ./kubernetes/apps/xlair-website
+    strategy: Setters

@@ -8,3 +8,4 @@ resources:
   - external-secret.yaml
   - persistentvolumeclaim.yaml
   - deployment.yaml
+  - image-automation.yaml

@@ -9,4 +9,5 @@ resources:
   - database.yaml
   - api.yaml
   - dashboard.yaml
+  - image-automation.yaml
   - httproutes.yaml

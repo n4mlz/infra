@@ -1,0 +1,76 @@
+# This file tracks production XLAIR images and commits updates for this workload set.
+
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: xlair-production-api
+  namespace: flux-system
+spec:
+  interval: 5m
+  image: ghcr.io/xlair-dev/xlair-api
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: xlair-production-api
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: xlair-production-api
+  filterTags:
+    pattern: '^latest$'
+  policy:
+    alphabetical:
+      order: asc
+  digestReflectionPolicy: Always
+  interval: 5m
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: xlair-production-dashboard
+  namespace: flux-system
+spec:
+  interval: 5m
+  image: ghcr.io/xlair-dev/dashboard
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: xlair-production-dashboard
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: xlair-production-dashboard
+  filterTags:
+    pattern: '^latest$'
+  policy:
+    alphabetical:
+      order: asc
+  digestReflectionPolicy: Always
+  interval: 5m
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageUpdateAutomation
+metadata:
+  name: xlair-production
+  namespace: flux-system
+spec:
+  interval: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  git:
+    checkout:
+      ref:
+        branch: main
+    commit:
+      author:
+        name: fluxcdbot
+        email: fluxcdbot@users.noreply.github.com
+      messageTemplate: '{{range .Changed.Changes}}{{print .OldValue}} -> {{println .NewValue}}{{end}}'
+    push:
+      branch: flux-image-updates/xlair-production
+  update:
+    path: ./kubernetes/apps/xlair-production
+    strategy: Setters
