@@ -1,8 +1,0 @@
-# This namespace contains the Fog of World viewer.
-
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: fog-of-world-viewer
-  labels:
-    secrets.n4mlz.dev/onepassword-infra: "true"

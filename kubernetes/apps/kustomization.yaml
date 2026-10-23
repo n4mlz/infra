@@ -12,6 +12,5 @@ resources:
   - chart-review
   - gitea
   - jellyfin
-  - fog-of-world-viewer
   - scrapbox-diary
   - st4r8ux-scraper
