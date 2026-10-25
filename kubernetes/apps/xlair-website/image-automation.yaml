@@ -20,8 +20,7 @@ spec:
   filterTags:
     pattern: '^latest$'
   policy:
-    alphabetical:
-      order: asc
+    alphabetical: {}
   digestReflectionPolicy: Always
   interval: 5m
 ---
@@ -33,12 +32,8 @@ metadata:
 spec:
   interval: 5m
   sourceRef:
-    kind: GitRepository
     name: flux-system
   git:
-    checkout:
-      ref:
-        branch: main
     commit:
       author:
         name: fluxcdbot
@@ -48,4 +43,3 @@ spec:
       branch: flux-image-updates/xlair-website
   update:
     path: ./kubernetes/apps/xlair-website
-    strategy: Setters

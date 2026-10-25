@@ -52,7 +52,7 @@ unset GITHUB_TOKEN
 
 既存クラスタに controller を追加する場合は、[Flux README](../../kubernetes/flux/README.md) の手順で生成マニフェストを更新し、差分を確認してから通常の Git レビュー手順で反映する。
 
-image automation は bootstrap Secret の GitHub PAT を使って service-specific branch に更新を push するため、PAT の Contents 権限に read / write が必要。GitHub Actions は Flux image update branch の PR を作成または更新し、GitHub auto-merge を要求する。repository の auto-merge は有効。現在の運用は [GitHub Actions README](../../.github/README.md) を参照する。
+image automation は bootstrap Secret の GitHub PAT を使って service-specific branch に更新を push するため、PAT の Contents 権限に read / write が必要。GitHub Actions は Flux image update branch の PR を作成または更新し、GitHub auto-merge を要求する。repository の auto-merge と、`GITHUB_TOKEN` による PR 作成を有効にする。現在の運用と設定場所は [GitHub Actions README](../../.github/README.md) を参照する。
 
 ### 3. Bootstrap 後の確認
 
