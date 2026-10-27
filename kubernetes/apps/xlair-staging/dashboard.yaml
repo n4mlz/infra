@@ -37,7 +37,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: dashboard
-          image: ghcr.io/xlair-dev/dashboard:latest@sha256:4bc0995237de9699178e63a2eabc3760ff6b080cb8ccaaed5f6ba8342efee224 # {"$imagepolicy": "flux-system:xlair-staging-dashboard"}
+          image: ghcr.io/xlair-dev/dashboard:latest@sha256:144a36ceb92673f12a117aa7b77371d01e94c41934bec797574a734743c7d092 # {"$imagepolicy": "flux-system:xlair-staging-dashboard"}
           ports:
             - name: http
               containerPort: 3000
