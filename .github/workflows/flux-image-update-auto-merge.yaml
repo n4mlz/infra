@@ -31,8 +31,8 @@ jobs:
             --repo "$GH_REPO" \
             --base main \
             --head "$UPDATE_BRANCH" \
-            --json url,headRefOid \
-            --jq --arg sha "$UPDATE_SHA" '[.[] | select(.headRefOid == $sha)][0].url // empty')"
+            --json url,headRefOid | \
+            jq -r --arg sha "$UPDATE_SHA" '[.[] | select(.headRefOid == $sha)][0].url // empty')"
 
           if [ -z "$pull_request_url" ]; then
             exit 0
