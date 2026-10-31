@@ -1,4 +1,4 @@
-# This workflow requests auto-merge after the image update PR workflow succeeds.
+# This workflow merges an image update PR after its PR workflow succeeds.
 
 name: Flux image update auto-merge
 
@@ -25,16 +25,17 @@ jobs:
           GH_REPO: ${{ github.repository }}
           GH_TOKEN: ${{ github.token }}
           UPDATE_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          UPDATE_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           pull_request_url="$(gh pr list \
             --repo "$GH_REPO" \
             --base main \
             --head "$UPDATE_BRANCH" \
-            --json url \
-            --jq '.[0].url // empty')"
+            --json url,headRefOid \
+            --jq --arg sha "$UPDATE_SHA" '[.[] | select(.headRefOid == $sha)][0].url // empty')"
 
           if [ -z "$pull_request_url" ]; then
             exit 0
           fi
 
-          gh pr merge "$pull_request_url" --repo "$GH_REPO" --auto --squash
+          gh pr merge "$pull_request_url" --repo "$GH_REPO" --squash

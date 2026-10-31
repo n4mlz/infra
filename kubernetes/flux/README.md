@@ -15,3 +15,7 @@ flux install \
 ```
 
 `--export` は manifest を出力するだけで、クラスタには適用しない。Flux CLI または component 構成を更新した場合は、この README のコマンドも合わせて更新し、生成差分をレビューする。
+
+## platform-config と apps の依存
+
+`apps` は hostname substitution に使う `app-hostnames` ConfigMap が先に作られるよう `platform-config` に依存する。`platform-config` は External Secrets のリソースも適用するが、1Password の可用性を待たない。secret の取得失敗で `platform-config` を NotReady にすると `apps` 全体が止まり、Flux image automation も動作しなくなるため、`platform-config` に `wait: true` を設定しない。
