@@ -38,4 +38,22 @@ jobs:
             exit 0
           fi
 
-          gh pr merge "$pull_request_url" --repo "$GH_REPO" --squash
+          for attempt in 1 2 3 4 5; do
+            if merge_output="$(gh pr merge "$pull_request_url" --repo "$GH_REPO" --squash 2>&1)"; then
+              printf '%s\n' "$merge_output"
+              exit 0
+            fi
+
+            printf '%s\n' "$merge_output" >&2
+            case "$merge_output" in
+              *"Base branch was modified"*)
+                if [ "$attempt" -eq 5 ]; then
+                  exit 1
+                fi
+                sleep "$attempt"
+                ;;
+              *)
+                exit 1
+                ;;
+            esac
+          done
