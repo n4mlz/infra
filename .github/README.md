@@ -12,4 +12,4 @@ gh api --method PUT repos/{owner}/{repo}/actions/permissions/workflow \
   -F can_approve_pull_request_reviews=true
 ```
 
-PR に競合がある場合は GitHub が merge を拒否する。競合を解消して PR workflow が再度成功した後に merge される。
+image update branch は Flux が `main` から生成する。詳細は [Flux README](../kubernetes/flux/README.md) を参照する。PR に競合がある場合は GitHub が merge を拒否する。

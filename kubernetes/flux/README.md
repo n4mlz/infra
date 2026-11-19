@@ -19,3 +19,7 @@ flux install \
 ## platform-config と apps の依存
 
 `apps` は hostname substitution に使う `app-hostnames` ConfigMap が先に作られるよう `platform-config` に依存する。`platform-config` は External Secrets のリソースも適用するが、1Password の可用性を待たない。secret の取得失敗で `platform-config` を NotReady にすると `apps` 全体が止まり、Flux image automation も動作しなくなるため、`platform-config` に `wait: true` を設定しない。
+
+## image update branch
+
+`ImageUpdateAutomation` は `flux-system` GitRepository の `main` を checkout し、workload ごとの branch に push する。`flux-system/kustomization.yaml` は image-automation-controller の `GitAllBranchReferences` を無効化し、既存の更新 branch を `main` と最新の image 更新から作り直す。squash merge 後も古い branch の履歴を引き継いで競合することを防ぐ。この branch は Flux 専用であり、手動の変更を置かない。

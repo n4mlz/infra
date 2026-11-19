@@ -42,4 +42,4 @@ jobs:
             exit 0
           fi
 
-          gh pr merge "$pull_request_url" --repo "$GH_REPO" --squash
+          gh pr merge "$pull_request_url" --repo "$GH_REPO" --squash --match-head-commit "$UPDATE_SHA"
