@@ -8,7 +8,7 @@ locals {
       vm_id        = 3101
       role         = "controlplane"
       cores        = 1
-      memory       = 8192
+      memory       = 4096
       disk_gb      = 32
       bootstrap    = false
       tags         = ["talos", "k8s", "control-plane"]
@@ -18,7 +18,7 @@ locals {
       vm_id        = 3102
       role         = "controlplane"
       cores        = 1
-      memory       = 8192
+      memory       = 4096
       disk_gb      = 32
       bootstrap    = false
       tags         = ["talos", "k8s", "control-plane"]
@@ -28,7 +28,7 @@ locals {
       vm_id        = 3103
       role         = "controlplane"
       cores        = 1
-      memory       = 8192
+      memory       = 4096
       disk_gb      = 32
       bootstrap    = false
       tags         = ["talos", "k8s", "control-plane"]

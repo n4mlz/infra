@@ -59,9 +59,9 @@ tofu apply
 
 | 名前 | VMID | 役割 | CPU | メモリ | system disk | persistent volume disk |
 |------|------|------|-----|--------|-------------|-----------------------|
-| cp-01 | 3101 | control-plane | 1 | 8192 | 32G | - |
-| cp-02 | 3102 | control-plane | 1 | 8192 | 32G | - |
-| cp-03 | 3103 | control-plane | 1 | 8192 | 32G | - |
+| cp-01 | 3101 | control-plane | 1 | 4096 | 32G | - |
+| cp-02 | 3102 | control-plane | 1 | 4096 | 32G | - |
+| cp-03 | 3103 | control-plane | 1 | 4096 | 32G | - |
 | wk-01 | 3201 | worker | 1 | 4096 | 32G | 256G |
 | wk-02 | 3202 | worker | 1 | 4096 | 32G | 256G |
 | wk-03 | 3203 | worker | 1 | 4096 | 32G | 256G |
