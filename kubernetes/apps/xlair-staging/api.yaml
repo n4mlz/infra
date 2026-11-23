@@ -37,7 +37,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: api
-          image: ghcr.io/xlair-dev/xlair-api:latest@sha256:a817d37c0c660488b0d828afae4f948d3bef9eae686fb2065c3093606167d0c4 # {"$imagepolicy": "flux-system:xlair-staging-api"}
+          image: ghcr.io/xlair-dev/xlair-api:latest@sha256:17b4d131db133342e8c66a9ab6d1d531eee8fdf0df88b684ebf37f6eccde9462 # {"$imagepolicy": "flux-system:xlair-staging-api"}
           ports:
             - name: http
               containerPort: 8080
