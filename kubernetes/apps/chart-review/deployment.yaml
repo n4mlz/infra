@@ -38,7 +38,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: chart-review
-          image: ghcr.io/xlair-dev/chart-review:latest@sha256:f7581bd98a9ef0438a70f42ee9dca2ac032d052bb3b016d3ad0e4bf0916d0f96 # {"$imagepolicy": "flux-system:chart-review"}
+          image: ghcr.io/xlair-dev/chart-review:latest@sha256:fa8407fd71d83253090483a6e33f67c1f69fd5beb7f37b5cab9705a8d862f03f # {"$imagepolicy": "flux-system:chart-review"}
           ports:
             - name: http
               containerPort: 3000
