@@ -37,7 +37,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: website
-          image: ghcr.io/xlair-dev/xlair.dev:latest@sha256:f709a635b9415b9b38c2504d33356a5b166368b6b435c8e8b9f23e0a381ae3c9 # {"$imagepolicy": "flux-system:xlair-website"}
+          image: ghcr.io/xlair-dev/xlair.dev:latest@sha256:293cd2a1a0392657a0b47aefb362044455a0111ce8af07e1446dec228c219335 # {"$imagepolicy": "flux-system:xlair-website"}
           ports:
             - name: http
               containerPort: 3000
